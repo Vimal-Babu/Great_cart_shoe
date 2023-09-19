@@ -157,6 +157,7 @@ def place_order(request,address=0):
                 order_id = order_id,
             )
             order.save()
+            cart_item.delete()
         return redirect('order_success',order.order_id)
     
     return render(request,'cart/checkout.html')
