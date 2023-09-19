@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Account{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <h1>Your Addresses</h1>
+    <div class="ya-card-row">
+        <div class="ya-card-cell">
+            <a href="{% url 'user_addAddress' %}" class="ya-card__whole-card-link">
+                <div class="card a-box ya-card--rich">
+                    <div class="card-body">
+                        <h5 class="card-title a-spacing-none ya-card__heading--rich a-text-normal">Add Addresses</h5>
+                        <p class="card-text"><span class="a-color-secondary">Here you can</span></p>
+                        <p class="card-text"><small class="a-color-secondary">add new address</small></p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% for address in addresses %}
+        <div class="ya-card-cell">
+            <div class="card a-box ya-card--rich">
+                <div class="card-body">
+                    <h5 class="card-title a-spacing-none ya-card__heading--rich a-text-normal">{{address.full_name}}</h5>
+                    <p class="card-text"><span class="a-color-secondary">{{address.user}}</span></p>
+                    <p class="card-text"><span class="a-color-secondary">{{address.phone}}</span></p>
+                    <p class="card-text"><span class="a-color-secondary">{{address.address_line_1}}</span></p>
+                    <p class="card-text"><span class="a-color-secondary">default:{{address.set_default}}</span></p>
+                    <!-- Other address details here -->
+
+                    <!-- Add Edit and Remove buttons for each address -->
+                    <div class="address-buttons">
+                        <a href="{% url 'edit_address' address.id %}" class="btn btn-primary mb-3">Edit</a>
+                        <!-- Add/Edit button -->
+                            {% comment %} <a href="#" class="btn btn-primary mb-3 edit-address" 
+                            data-toggle="modal" 
+                            data-target="#editModal" 
+                            data-fullname="{{ address.full_name }}" 
+                            data-phone="{{ address.phone }}"
+                            data-address="{{ address.address_line_1 }}"
+                            data-zipcode="{{ address.Zipcode }}"
+                            data-state="{{ address.state }}"
+                            data-city="{{ address.city }}"
+                            data-landmark="{{ address.landmark }}"
+                            data-default="{{ address.set_default }}">
+                            Edit
+                            </a> {% endcomment %}
+
+                        <form method="post" action="{% url 'remove_address' address.id %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+

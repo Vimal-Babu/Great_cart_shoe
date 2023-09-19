@@ -1,0 +1,230 @@
+{% extends 'Admin/adminlayouts/main.html' %}
+{% block title %}product{% endblock title %}
+{% load static %}
+
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <h4>Product List</h4>
+    <button class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#addProductModal">Add New Product</button>
+  </div>
+
+
+
+  <!-- Add Product Modal -->
+  <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Add form fields here -->
+          <form method="POST" action="{% url 'add_product' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="product_name">Product Name</label>
+              <input type="text" class="form-control" id="product_name" name="product_name" required>
+            </div>
+
+            <div class="form-group">
+              <label for="product_category">Category</label>
+              <select class="form-control" id="category" name="category" required>
+                {% for category in categories %}
+                <option value="{{ category.id }}">{{ category.category_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="product_new_arrival">New Arrival</label>
+              <select class="form-control" id="new_arrival" name="new_arrival" required>
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="product_brand">Brand</label>
+              <select class="form-control" id="brand" name="brand" required>
+                {% for brand in brands %}
+                <option value="{{ brand.id }}">{{ brand.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="description" class="form-label">Product Description</label>
+              <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="product_mrp">MRP</label>
+              <input type="number" class="form-control" id="product_mrp" name="product_price" min="0" required>
+            </div>
+
+
+            <div class="form-group">
+              <label for="product_mrp">stock</label>
+              <input type="number" class="form-control" id="product_mrp" name="stock" min="0" required>
+            </div>
+
+
+            <div class="form-group">
+              <label for="productImage" class="form-label">Product Image</label>
+              <input type="file" class="form-control" id="productImage" name="product_image" required>
+            </div>
+
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>    <!--........ Add Product Modal End................ -->
+
+
+
+
+
+
+
+
+
+        <div class="card-body">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Product_Name</th>
+                <th scope="col">Category</th>
+                <th scope="col">NewArrival</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Description</th>
+                <th scope="col">Image</th>
+                <th scope="col">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for product in products %}
+              <tr>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.category.category_name }}</td>
+                <td>
+                  {% if product.new_arrivals == 1 %}
+                    Yes
+                  {% else %}
+                    No
+                  {% endif %}
+                </td>
+                <td>{{ product.brand }}</td>
+                <td>{{ product.description }}</td>
+                <td>
+                  <img src="{{ product.image.url }}" alt="Product Image" width="50">
+                </td>
+                <td>
+                  <!-- Action Buttons -->
+                  <div class="btn-group">
+                    {% if product.is_available %}
+                    <a href="{% url 'product_block' product.id %}" class="btn btn-outline-danger mx-1">Block</a>
+                    {% else %}
+                    <a href="{% url 'product_unblock' product.id %}" class="btn btn-outline-success mx-1">Unblock</a>
+                    {% endif %}
+                    <button class="btn btn-outline-dark mx-1" data-bs-toggle="modal" data-bs-target="#editProductModal{{ product.id }}">Edit</button>
+                  </div>
+                </td>
+              </tr>
+
+
+              
+
+                <!-- Edit Product Modal -->
+
+              <div class="modal fade" id="editProductModal{{ product.id }}" tabindex="-1" aria-labelledby="editProductModalLabelz" aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="editProductModalLabel{{ product.id }}">Edit Product</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <!-- Edit form fields here -->
+                      <form method="POST" action="{% url 'edit_product' product.id %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                          <label for="product_name">Product Name</label>
+                          <input type="text" class="form-control" id="product_name" name="product_name" value="{{ product.product_name }}" required>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="product_category">Category</label>
+                          <select class="form-control" id="category" name="category" required>
+                            {% for category in categories %}
+                            <option value="{{ category.id }}" {% if category.id == product.category.id %}selected{% endif %}>{{ category.category_name }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="product_new_arrival">New Arrival</label>
+                          <select class="form-control" id="new_arrival" name="new_arrival" required>
+                            <option value="1" {% if product.new_arrivals == 1 %}selected{% endif %}>Yes</option>
+                            <option value="0" {% if product.new_arrivals == 0 %}selected{% endif %}>No</option>
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="product_brand">Brand</label>
+                          <select class="form-control" id="brand" name="brand" required>
+                            {% for brand in brands %}
+                            <option value="{{ brand.id }}" {% if brand.id == product.brand.id %}selected{% endif %}>{{ brand.name }}</option>
+                            {% endfor %}
+                          </select>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="description" class="form-label">Product Description</label>
+                          <textarea class="form-control" id="description" name="description" rows="4" required>{{ product.description }}</textarea>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="product_mrp">MRP</label>
+                          <input type="number" class="form-control" id="product_mrp" name="product_price" value="{{ product.price }}" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="product_stock">Stock</label>
+                          <input type="number" class="form-control" id="product_stock" name="stock" value="{{ product.stock }}" min="0" required>
+                        </div>
+
+                        <div class="form-group">
+                          <label for="productImage" class="form-label">Product Image</label>
+                          <input type="file" class="form-control" id="productImage" name="product_image">
+                        </div>
+
+                        <div class="modal-footer">
+                          <button type="submit" class="btn btn-primary">Save Changes</button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--........ Edit Product Modal End................ -->
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock body %}
+</tbody>
+</table>
+</div>
+</div>
+

@@ -1,0 +1,59 @@
+{% extends 'Admin/adminlayouts/main.html' %}
+{% block title %}Order{% endblock title %}
+{% load static %}
+
+{% block body %}
+<div class="card">
+    <div class="card-header">
+        <h4>Order List</h4>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Order ID</th>
+                    <th scope="col">Products</th>
+                    <th scope="col">Total Price</th>
+                    <th scope="col">manage Status</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Delivery Address</th>
+                    <th scope="col">Order Date</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <th scope="row">{{ order.id }}</th>
+                    <td><img src="{{order.product.image.url}}" width="50" alt = "product Image"></td>
+                    <td>{{ order.total_price }}</td>
+                    <td>
+                        <form action="{% url 'manage_status' order.id %}" method="post">
+                            {% csrf_token %}
+                            <select class="form-select" id="orderStatus{{ order.id }}" name="status">
+                                {% for choice in order.order_status_choices %}
+                                    <option value="{{ choice.0 }}" {% if choice.0 == order.order_status %}selected{% endif %}>
+                                        {{ choice.1 }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-primary">Update Status</button>
+                        </form>
+                    </td>
+                    <td>{{order.order_status}}</td>
+                    <td>{{ order.delivery_address }}</td>
+                    <td>{{ order.order_date }}</td>
+                    <td>
+                        {% comment %} <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#changeStatusModal{{ order.id }}">Change Status</button> {% endcomment %}
+                        <a href="{% url 'cancel_order' order.id %}" class="btn btn-danger btn-sm">Cancel Order</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        <!-- Table content goes here -->
+        </tbody>
+        </table>
+    </div>
+</div>
+{% endblock body %}

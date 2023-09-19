@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Orders{% endblock %}
+
+{% block content %}
+<style>
+    /* Custom CSS */
+.img-small {
+    max-width: 50px; /* Adjust the maximum width to your desired small size */
+    max-height: 50px; /* Adjust the maximum height to your desired small size */
+}
+
+</style> 
+
+<header class="container mt-5">
+    <h1>Your Orders</h1>
+</header>
+<section class="container order-list mt-3">
+    {% for order in orders %}
+    <div class="order card mb-3">
+        <div class="card-header order-header bg-primary text-white" >
+            <img src="{{ order.product.image.url }}" alt="Product Image" class=" img-small">
+            <span class="order-status badge badge-info">{{ order.order_status }}</span>
+        </div>
+        <div class="card-body order-details">
+            <p class="card-text"></p>
+            <ul>
+                <li class="card-text">Product Name: {{ order.product }}</li>
+                <li class="card-text">Total Price: ₹{{ order.total_price }}</li>
+                <li class="card-text">Order Date: {{ order.order_date }}</li>
+                <li class="card-text mt-3">Delivery Address:</li>
+                <ul>
+                    <p>Full Name: {{ order.delivery_address.full_name }}</p>
+                    <p>Phone: {{ order.delivery_address.phone }}</p>
+                    <p>Address: {{ order.delivery_address.address_line_1 }}</p>
+                    <p>Zipcode: {{ order.delivery_address.Zipcode }}</p>
+                    <p>State: {{ order.delivery_address.state }}</p>
+                    <p>City: {{ order.delivery_address.city }}</p>
+                    <p>Landmark: {{ order.delivery_address.landmark }}</p>
+                    <p>Order Status: {{ order.order_status }}</p>
+                </ul>
+            </ul>
+            {% if order.order_status == 'Pending' %}
+            <form method="post" action="{% url 'cancel_order' order.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger cancel-button">Cancel Order</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>
+
+
+
+{% endblock %}
+
+
+
+
+
+<section class="container order-list mt-3">
+    {% for order in orders %}
+    <div class="order card mb-3">
+        <div class="card-header order-header bg-primary text-white" >
+            <img src="{{ order.product.image.url }}" alt="Product Image" class=" img-small">
+            <span class="order-status badge badge-info">{{ order.order_status }}</span>
+        </div>
+        <div class="card-body order-details">
+            <p class="card-text"></p>
+            <ul>
+                            {% comment %} {% for item in order.orderitem_set.all %}
+                            <li>{{ item.product.name }}</li>
+                            {% endfor %} {% endcomment %}
+            </ul>
+            <li class="card-text">Product Name: {{ order.product }}</li>
+            <li class="card-text">Total Price:  ₹{{ order.total_price }}</li>
+            <li class="card-text">Order Date: {{ order.order_date }}</li>
+            <li class="card-text mt-3">Delivery Address:</li>
+            <ul>
+                <p>Full Name: {{ order.delivery_address.full_name }}</p>
+                <p>Phone: {{ order.delivery_address.phone }}</p>
+                <p>Address: {{ order.delivery_address.address_line_1 }}</p>
+                <p>Zipcode: {{ order.delivery_address.Zipcode }}</p>
+                <p>State: {{ order.delivery_address.state }}</p>
+                <p>City: {{ order.delivery_address.city }}</p>
+                <p>Landmark: {{ order.delivery_address.landmark }}</p>
+            </ul>
+            {% if order.order_status == 'Pending' %}
+            <button class="btn btn-danger cancel-button">Cancel Order</button>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</section>

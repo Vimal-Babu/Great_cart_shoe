@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Checkout {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4 class="mt-5">2. Select a Payment Method</h4>
+    <hr>
+    <div class="payment-method mt-4">
+        <h5>Choose Payment method</h5>
+        <hr>
+        <form action="{% url 'place_order' %}" method="post">
+            {% csrf_token %}
+            <div class="payment-options row">
+                <div class="col-md-3 payment-option">
+                    <input type="radio" id="creditCard" name="paymentMethod" value="creditCard">
+                    <label for="creditCard">
+                        {% comment %} <img src="{% static 'credit_card.png' %}" alt="Credit Card" class="img-fluid">{% endcomment %}
+                        <p class="mt-2">Credit or Debit Card</p> 
+                    </label>
+                </div>
+                <div class="col-md-3 payment-option">
+                    <input type="radio" id="netBanking" name="paymentMethod" value="netBanking">
+                    <label for="netBanking">
+                        {% comment %} <img src="{% static 'net_banking.png' %}" alt="Net Banking" class="img-fluid">  {% endcomment %}
+                        <p class="mt-2">Net Banking</p>
+                    </label>
+                </div>
+                <div class="col-md-3 payment-option">
+                    <input type="radio" id="upiApps" name="paymentMethod" value="upiApps">
+                    <label for="upiApps">
+                        {% comment %} <img src="{% static 'upi.png' %}" alt="UPI" class="img-fluid">  {% endcomment %}
+                        <p class="mt-2">Other UPI Apps</p>
+                    </label>
+                </div>
+                <div class="col-md-3 payment-option mb-3">
+                    <input type="radio" id="cashOnDelivery" name="paymentMethod" value="cashOnDelivery">
+                    <label for="cashOnDelivery">
+                        {% comment %} <img src="{% static 'cash_on_delivery.png' %}" alt="Cash on Delivery" class="img-fluid"> {% endcomment %}
+                        <p class="mt-2">Cash on Delivery</p>
+                    </label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mb-3">Use this payment method</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

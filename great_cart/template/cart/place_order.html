@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Place Order {% endblock %}
+
+{% block content %}
+
+<body>
+    <div class="container">
+        <h4 class="mt-4">4 Review items and delivery</h4>
+        <hr>
+        <form method="post" action="{% url 'place_order' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="address">Choose an address:</label>
+                <select class="form-control" id="address" name="address">
+                    {% for address in addresses %}
+                    <option value="{{ address.id }}">{{ address.full_name }}, {{ address.address_line_1 }}, {{
+                        address.city }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            {% for cart_item in cart_items %}
+            <div class="order-summary bg-light p-3 border mb-3">
+                <div class="row">
+                    <div class="col-md-3">
+                        <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}"
+                            class="img-fluid">
+                    </div>
+                    <div class="col-md-9">
+                        <p>{{ cart_item.product.product_name }}</p>
+                        <p class="font-weight-bold">₹{{ cart_item.product.price }}</p>
+                        <p>Qty: {{ cart_item.quantity }}</p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-warning text-white mb-3">Place your order</button>
+            <p class="font-weight-bold order-total">Order Total: ₹{{ total_price }}</p>
+            <p>By placing your order, you agree to Great Cart's privacy notice and conditions of use.</p>
+        </form>
+    </div>
+</body>
+{% endblock %}
+
+
+
+
+
+<!-- <p>Delivery date: {{ delivery_date }}</p>
+            <p>Items dispatched by Amazon</p> -->
+
+<!-- <p>Add gift options</p>
+            <p>Choose a delivery option:</p>
+            <div class="delivery-option border p-3 mb-3">
+                <p>{{ delivery_option }}</p>
+            </div> -->
+
+
+
+{% for cart_item in cart_items %}
+<div class="order-summary bg-light p-3 border mb-3">
+    <p>{{ cart_item.product.name }}</p>
+    <p class="font-weight-bold">₹{{ cart_item.product.price }}</p>
+    <p>Qty: {{ cart_item.quantity }}</p>
+</div>
+{% endfor %}

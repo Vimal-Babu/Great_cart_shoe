@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add a link to an external CSS file for custom styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Bootstrap4 files -->
+    <title>Receipt</title>
+    <style>
+        /* You can also add inline styles here if needed */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .gradient-custom {
+            background: linear-gradient(to right, #a8729a, #e0e0e0);
+        }
+
+        .card {
+            border-radius: 10px;
+        }
+
+        .card-header {
+            background-color: #a8729a;
+            color: white;
+        }
+
+        .card-body {
+            background-color: white;
+        }
+
+        .card-footer {
+            background-color: #a8729a;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            color: white;
+        }
+
+        .receipt-item {
+            margin-bottom: 20px;
+        }
+
+        .receipt-item img {
+            max-width: 100px;
+            border-radius: 5px;
+        }
+
+        .progress {
+            height: 6px;
+            border-radius: 16px;
+        }
+
+        .progress-bar {
+            border-radius: 16px;
+            background-color: #a8729a;
+        }
+    </style>
+</head>
+<body>
+    <!-- Your existing HTML content here -->
+    <body>
+    
+    <section class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 ">
+                <div class="card mb-4 ml-3">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 text-center">Billing details</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        {% for order in orders %}
+                        <div class="receipt-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <img src="{{ order.product.image.url }}" class="img-fluid" alt="Product Image">
+                                </div>
+                                <hr>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0">Order Status :{{ order.order_status }}</p>
+                                </div>
+                                <hr>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small">product Name :{{ order.product.product_name }}</p>
+                                </div>
+                                <hr>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small">Delivery Address:</p> 
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small">{{ order.delivery_address.address_line_1 }}<br>{{ order.delivery_address.city }}<br>{{ order.delivery_address.state }}<br> {{ order.delivery_address.Zipcode }}<br>{{ order.delivery_address.landmark }}</p>
+                                </div>
+                                <hr>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small">Qty: {{ order.quantity }}</p>
+                                </div>
+                                <hr> 
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small">Total Price :{{ order.total_price }}</p>
+                                </div>
+                                <hr>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <h3>Grand Total: ${{ grand_total }}</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</body>
+</html>

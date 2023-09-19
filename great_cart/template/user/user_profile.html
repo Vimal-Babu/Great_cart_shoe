@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Account{% endblock %}
+
+{% block content %}
+<style>
+    /* styles.css */
+
+.ya-card-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.ya-card-cell {
+    flex: 1;
+    margin: 0 10px;
+    text-align: center;
+}
+
+.ya-card__whole-card-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.a-box {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 15px;
+    transition: background-color 0.3s;
+}
+
+.a-box:hover {
+    background-color: #f5f5f5;
+}
+
+.ya-card__heading--rich {
+    margin-bottom: 10px;
+}
+
+.a-color-secondary {
+    font-size: 14px;
+    color: #888;
+}
+{% comment %} {% url 'order_page' %} {% url 'your_orders' %} {% endcomment %}
+</style>
+<div class="container mt-5">
+    <h1>Your Account</h1>
+    <div class="ya-card-row">
+        <div class="ya-card-cell">
+            <a href="{% url 'your_orders_page' %}" class="ya-card__whole-card-link"> 
+                <div data-card-identifier="YourOrders" class="a-box ya-card--rich">
+                    <div class="a-box-inner">
+                        <div class="a-column a-span9 a-span-last">
+                            <h2 class="a-spacing-none ya-card__heading--rich a-text-normal">Your Orders</h2>
+                            <div><span class="a-color-secondary">Track, return, or buy things again</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="ya-card-cell">
+            <a href="{% url 'change_password' %}" class="ya-card__whole-card-link">
+                <div data-card-identifier="SignInAndSecurity" class="a-box ya-card--rich">
+                    <div class="a-box-inner">
+                        <div class="a-column a-span9 a-span-last">
+                            <h2 class="a-spacing-none ya-card__heading--rich a-text-normal">Login &amp; security</h2>
+                            <div><span class="a-color-secondary">Edit login, name, and mobile number</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="ya-card-cell">
+            <a href="{% url 'user_address' %}" class="ya-card__whole-card-link">
+                <div data-card-identifier="Prime" class="a-box ya-card--rich">
+                    <div class="a-box-inner">
+                        <div class="a-column a-span9 a-span-last">
+                            <h2 class="a-spacing-none ya-card__heading--rich a-text-normal">Your address</h2>
+                            <div><span class="a-color-secondary">Edit addresses for orders and gifts</span></div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<br>
+{% endblock %}

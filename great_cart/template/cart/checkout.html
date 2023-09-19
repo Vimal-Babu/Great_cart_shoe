@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Checkout {% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header py-3">
+                    <h5 class="mb-0 text-center">Billing details</h5>
+                    <button class="btn btn-outline-primary"><a href="{% url 'user_addAddress' %}">manage address</a></button>
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'place_order' %}">
+                        {% csrf_token %}
+                        {% for addres in address %}
+                            <label  class="ml-3">
+                                <input type="radio" name="selected_address" value="{{ addres.id }}"  >
+                                <br>
+                                {{ addres.full_name }} <br>
+                                {{ addres.address_line_1 }}<br>
+                                {{ addres.phone }}<br>
+                                {{ addres.landmark }}<hr>
+                            </label>
+                            <br>
+                        {% endfor %}    
+                        <h5>payment method</h5>
+                        <label>
+                        <input type="radio" name="payment_method" value="Razorpay">
+                            Razorpay (RPZ)
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="payment_method" value="COD">
+                            Cash on Delivery (COD)
+                        </label>
+                        <br>
+                        <label>
+                            <input type="radio" name="payment_method" value="Wallet">
+                            Wallet
+                        </label>
+                        <br>
+                        <div class="d-grid gap-2 col-6 mx-auto text-center">
+                            <button type="submit" class="btn btn-success">Place Order</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+
+
+ <!-- First Row of Address Fields -->
+                        {% comment %} <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="full_name" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" value="{{ address.full_name }}" id="full_name"
+                                    name="full_name">
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="phone" class="form-label">Phone</label>
+                                <input type="tel" class="form-control" value="{{ address.phone }}" id="phone" name="phone">
+                            </div>
+                        </div>
+
+                        <!-- Second Row of Address Fields -->
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="address_line_1"
+                                    style="font-weight: bold; display: block; margin-top: 10px; margin-bottom: 5px;">Address
+                                    Line 1:</label>
+                                <input type="text" id="address_line_1" name="address_line_1"
+                                    value="{{ address.address_line_1 }}" required
+                                    style="width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 5px;"><br>
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="zipcode" class="form-label">Zipcode</label>
+                                <input type="text" class="form-control" value="{{ address.Zipcode }}" id="zipcode"
+                                    name="zipcode">
+                            </div>
+                        </div>
+
+                        <!-- Third Row of Address Fields -->
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="state" class="form-label">State</label>
+                                <input type="text" class="form-control" value="{{ address.state }}" id="state" name="state">
+                            </div>
+                            <div class="mb-3 col-md-6">
+                                <label for="city" class="form-label">City</label>
+                                <input type="text" class="form-control" value="{{ address.city }}" id="city" name="city">
+                            </div>
+                        </div>
+
+                        <!-- Fourth Row of Address Fields -->
+                        <div class="row">
+                            <div class="mb-3 col-md-6">
+                                <label for="landmark" class="form-label">Landmark</label>
+                                <input type="text" class="form-control" value="{{ address.landmark }}" id="landmark"
+                                    name="landmark">
+                            </div>
+                        </div>
+
+                        <h5>select address</h5> {% endcomment %}
+                        <!-- Payment Method Radio Buttons Here -->
+            

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Account{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Center the form container horizontally */
+    .form-container {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 600px; /* Adjust the width as needed */
+    }
+
+    /* Style for the "Set Default" checkbox */
+    .checkbox-label {
+        display: flex;
+        align-items: center;
+    }
+
+    .checkbox-label input {
+        margin-right: 5px; /* Add some spacing between the checkbox and label */
+    }
+</style>
+
+<div class="form-container">
+    <h1>Add a new address</h1>
+<form method="post" action="">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="full_name" class="form-label">Full Name</label>
+        <input type="text" class="form-control" id="full_name" name="full_name">
+    </div>
+    <div class="mb-3">
+        <label for="phone" class="form-label">Phone</label>
+        <input type="tel" class="form-control" id="phone" name="phone">
+    </div>
+    <div class="mb-3">
+        <label for="address_line_1" class="form-label">Address Line 1</label>
+        <textarea class="form-control" id="address_line_1" name="address_line_1" rows="4"></textarea>
+    </div>
+    
+    <div class="mb-3">
+        <label for="zipcode" class="form-label">Zipcode</label>
+        <input type="text" class="form-control" id="zipcode" name="zipcode">
+    </div>
+    <div class="mb-3">
+        <label for="state" class="form-label">State</label>
+        <input type="text" class="form-control" id="state" name="state">
+    </div>
+    <div class="mb-3">
+        <label for="city" class="form-label">City</label>
+        <input type="text" class="form-control" id="city" name="city">
+    </div>
+    <div class="mb-3">
+        <label for="landmark" class="form-label">Landmark</label>
+        <input type="text" class="form-control" id="landmark" name="landmark">
+    </div>
+    <div class="mb-3 checkbox-label">
+        <label for="set_default" class="form-label">Set Default</label>
+        <input type="checkbox" class="form-check-input" id="set_default" name="set_default">
+    </div>  
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends 'Admin/adminlayouts/main.html' %}
+{% block title %}product{% endblock title %}
+{% load static %}
+
+{% block body %}
+<div class="card">
+  <div class="card-header">
+    <h4>User List</h4>
+  </div>
+<div class="container-md main-content">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="search-bar">
+        <form method="GET" action="{% url 'user'%}">
+          <!-- Your form content here -->
+        </form>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Action</th>
+            <th scope="col">Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in all_users %}
+          <tr>
+            <th scope="row">{{d.id}}</th>
+            <td>{{d.first_name}}</td>
+            <td>{{d.email}}</td>
+            <td>
+              {% if d.is_active %}
+              <a href="{% url 'user_block' d.id %}" class="btn btn-outline-danger mx-1">Block</a>
+              {% else %}
+              <a href="{% url 'user_unblock' d.id %}" class="btn btn-outline-success mx-1">Unblock</a>
+              {% endif %}
+            </td>
+            <td>{{d.phone}}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+{% endblock body %}
+
+
+
+
+
+
+ {% comment %} <div class="input-group">
+              <input type="text" class="form-control rounded" placeholder="Search by name/email/id" aria-label="Search" aria-describedby="search-addon" name="search" />
+              <button type="submit" class="btn btn-outline-primary">Search</button>
+            </div> {% endcomment %}
+
+{% comment %} <h1 class="col-md-12 text-white bg-dark text-center p-2 table-heading">User Details</h1> {% endcomment %}
+{% comment %} <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Management</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+  <style>
+    /* Custom styles */
+    .main-content {
+      padding-top: 20px;
+    }
+
+    .search-bar {
+      margin-bottom: 20px;
+    }
+
+    .table-heading {
+      margin-bottom: 20px;
+    }
+  </style>
+</head> {% endcomment %}
+
+ {% comment %} <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-md">
+      <a class="navbar-brand" href="{% url 'user'%}">FAN TASTIC</a>
+      <a class="btn btn-success text-decoration-none" href="">LogOut</a>
+    </div>
+  </nav> {% endcomment %}
+  
+  <!-- Optional JavaScript -->
+  {% comment %} <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> {% endcomment %}
