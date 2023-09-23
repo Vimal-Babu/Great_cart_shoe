@@ -1,7 +1,15 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from .models import Orders
 from cart.models import CartItem
 # Create your views here.
+from wallet.models import Wallet  # Import the Wallet model
+
+
+
+
+
+
+
 
 
 

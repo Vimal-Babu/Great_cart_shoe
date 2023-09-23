@@ -38,4 +38,7 @@ urlpatterns = [
     
     
     path('Banner_management',views.Banner_management,name = 'Banner_management'),
+    path('add_banner',views.add_banner,name = 'add_banner'),
+    path('remove_banner/<int:id>',views.remove_banner,name = 'remove_banner'),
+    path('generate_sales_report_pdf', views.generate_sales_report_pdf, name='generate_sales_report_pdf'),
 ]

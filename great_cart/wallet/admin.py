@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import wallet
+from .models import Wallet
 
 # Register your models here.
 
-admin.site.register(wallet)
+admin.site.register(Wallet)

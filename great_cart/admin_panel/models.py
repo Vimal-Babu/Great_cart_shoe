@@ -37,8 +37,8 @@ class Product(models.Model):
 
 class Banner(models.Model):
     image = models.ImageField(upload_to='photo/banners/')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True, default=None)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True, blank=True, default=None)
     active = models.BooleanField(default=True)
 
 

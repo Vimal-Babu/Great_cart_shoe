@@ -59,7 +59,7 @@
                             <td>
                                 <div class="price-wrap">
 									
-                                    <var class="price">{{cart_item.cart_price}}</var>
+                                    <var class="price">₹{{cart_item.cart_price}}</var>
                                     {% comment %} <small class="text-muted"> {{ cart_item.product.discounted_price }} each </small> {% endcomment %}
                                 </div>
                             </td>
@@ -81,7 +81,7 @@
                 <div class="card-body">
                     <dl class="dlist-align">
                         <dt>Total price:</dt>
-                        <dd class="text-right">{{total_price}}</dd>
+                        <dd class="text-right">₹{{total_price}}</dd>
                     </dl>
                     {% comment %} <dl class="dlist-align">
                         <dt>Tax:</dt>
@@ -93,14 +93,15 @@
                     </dl>
                     <dl class="dlist-align">
                         <dt>Total:</dt>
-                        <dd class="text-right text-dark b"><strong>{{total_price}}</strong></dd>
+                        <dd class="text-right text-dark b"><strong>₹{{total_price}}</strong></dd>
                     </dl>
                     <hr>
                     <p class="text-center mb-3">
                         <img src="{% static 'images/misc/payments.png' %}" height="26">
                     </p>
                     {% if total_price <= 0 %}
-                    <p style = "color: red">Add products for continue parchase.....</P>
+                    {% comment %} <p style = "color: red">Add products</P> {% endcomment %}
+                    <a href="{% url 'store' %}" class="btn btn-light btn-block" style = "color: red">You forget to Add products</a>
                     {% elif total_price >= 0%}
                     <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Checkout </a>
 

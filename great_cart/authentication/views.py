@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from admin_panel.models import Product
+from admin_panel.models import Product,Banner
 from . models import CustomUser
 from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
@@ -132,7 +132,7 @@ def handle_login(request):
             else:
                 login(request,my_user)
                 messages.success(request, "Login successful.")
-                return redirect('/')  # Correct the URL pattern here
+                return redirect('home')  # Correct the URL pattern here
         else:
             messages.success(request, "Invalid email or password. Please try again")
     return render(request, 'authentication/login.html')
@@ -237,9 +237,13 @@ def change_password(request):
 
 
 def home(request):
+    if request.user.is_superuser:
+        return redirect('admin_index')
+    banners = Banner.objects.all()
     products = Product.objects.all()
     context={
-        'products':products
+        'products':products,
+        'banners':banners,
     }
     return render(request,'home/home.html',context)
 

@@ -4,6 +4,95 @@
 {% block title %}Your Orders{% endblock %}
 
 {% block content %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- Your existing HTML content here -->
+<body>
+    <section class="container-fluid mt-5">
+        <div class="row justify-content-center">
+            <div class="col-12 ">
+                <div class="card mb-4 ml-3">
+                    <div class="card-header py-3 bg-primary">
+                        <h1 class="text-white mb-0 text-center" >Billing details</h1>
+                    </div>
+                    <div id="invoice-content" class="card-body mt-2 p-4">
+                        {% for order in orders %}
+                        <div class="receipt-item">
+                            <div class="row mt-4 m-4">
+                                
+                                <div class="col-md-2 ">
+                                    <img src="{{ order.product.image.url }}" class="img-fluid" alt="Product Image">
+                                    <hr>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0"><h6>Order Status :</h6>{{ order.order_status }}</p>
+                                    <p class="text-muted mb-0 small"><h6>product Name :</h6>{{ order.product.product_name }}</p>
+                                    <p class="text-muted mb-0 small mb-3"><h6>Qty:</h6> {{ order.quantity }}</p>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <p class="text-muted mb-0 small"><h6>Delivery Address:</h6></p>
+                                    <p class="text-muted mb-0 small">{{ order.delivery_address.address_line_1 }}<br>{{ order.delivery_address.city }}<br>{{ order.delivery_address.state }}, {{ order.delivery_address.Zipcode }},{{ order.delivery_address.landmark }}</p> 
+                                    <p class="text-muted mb-0 small">Total Price :{{ order.total_price }}</p><hr>
+                                </div>
+                                <div class="col-md-2 text-center">
+                                        <p class="text-muted mb-0"><h6>Order Date: </h6>{{ order.order_date  }}</p>
+                                    {% if order.order_status == 'Pending' %}
+                                    <form method="post" action="{% url 'cancel_order_button' order.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger cancel-button">Cancel Order</button>
+                                    </form>
+                                    {% elif order.order_status == 'Cancelled' %}
+                                        <p style="color: red;">Order Cancelled</p>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-2 text-center">
+                                    <a href="{% url 'generate_pdf' order.id %}" class="btn btn-primary" target="_blank">Download PDF</a>
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </div>
+                    <h3 class="ml-3">Grand Total: ${{ grand_total }}</h3>
+                    <a href="{% url 'store' %}" style ="color: red" class="btn btn-light btn-block">CLICK HERE TO CONTINUE SHOPPING</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% comment %} 
+
 <style>
     /* Custom CSS */
 .img-small {
@@ -28,7 +117,7 @@
             <ul>
                 <li class="card-text">Product Name: {{ order.product }}</li>
                 <li class="card-text">Total Price: ₹{{ order.total_price }}</li>
-                <li class="card-text">Order Date: {{ order.order_date }}</li>
+                
                 <li class="card-text mt-3">Delivery Address:</li>
                 <ul>
                     <p>Full Name: {{ order.delivery_address.full_name }}</p>
@@ -42,7 +131,7 @@
                 </ul>
             </ul>
             {% if order.order_status == 'Pending' %}
-            <form method="post" action="{% url 'cancel_order' order.id %}">
+            <form method="post" action="{% url 'cancel_order_button' order.id %}">
                 {% csrf_token %}
                 <button type="submit" class="btn btn-danger cancel-button">Cancel Order</button>
             </form>
@@ -50,47 +139,4 @@
         </div>
     </div>
     {% endfor %}
-</section>
-
-
-
-{% endblock %}
-
-
-
-
-
-<section class="container order-list mt-3">
-    {% for order in orders %}
-    <div class="order card mb-3">
-        <div class="card-header order-header bg-primary text-white" >
-            <img src="{{ order.product.image.url }}" alt="Product Image" class=" img-small">
-            <span class="order-status badge badge-info">{{ order.order_status }}</span>
-        </div>
-        <div class="card-body order-details">
-            <p class="card-text"></p>
-            <ul>
-                            {% comment %} {% for item in order.orderitem_set.all %}
-                            <li>{{ item.product.name }}</li>
-                            {% endfor %} {% endcomment %}
-            </ul>
-            <li class="card-text">Product Name: {{ order.product }}</li>
-            <li class="card-text">Total Price:  ₹{{ order.total_price }}</li>
-            <li class="card-text">Order Date: {{ order.order_date }}</li>
-            <li class="card-text mt-3">Delivery Address:</li>
-            <ul>
-                <p>Full Name: {{ order.delivery_address.full_name }}</p>
-                <p>Phone: {{ order.delivery_address.phone }}</p>
-                <p>Address: {{ order.delivery_address.address_line_1 }}</p>
-                <p>Zipcode: {{ order.delivery_address.Zipcode }}</p>
-                <p>State: {{ order.delivery_address.state }}</p>
-                <p>City: {{ order.delivery_address.city }}</p>
-                <p>Landmark: {{ order.delivery_address.landmark }}</p>
-            </ul>
-            {% if order.order_status == 'Pending' %}
-            <button class="btn btn-danger cancel-button">Cancel Order</button>
-            {% endif %}
-        </div>
-    </div>
-    {% endfor %}
-</section>
+</section> {% endcomment %}

@@ -2,22 +2,9 @@
 {% load static %}
 
 {% block body %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <body>
-    {% comment %} <div class="container-xxl  bg-white d-flex ">
-        <!-- Spinner Start -->
-        <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
-            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
-                <span class="sr-only">Loading...</span>
-            </div>
-        </div>  {% endcomment %}
-        <!-- Spinner End -->
-
-
-        <!-- Sidebar Start -->
-
-        <!-- Sidebar End -->
-
-
         <!-- Content Start -->
         <div class="content" style="margin:0">
 
@@ -64,7 +51,6 @@
             </div>
             <!-- Sale & Revenue End -->
 
-
             <!-- Sales Chart Start -->
             <div class="container-fluid pt-4 px-4">
                 <div class="row g-4">
@@ -74,7 +60,7 @@
                                 <h6 class="mb-0">Worldwide Sales</h6>
                                 <a href="">Show All</a>
                             </div>
-                            <canvas id="worldwide-sales"></canvas>
+                            <canvas id="monthChart"></canvas>
                         </div>
                     </div>
                     <div class="col-sm-12 col-xl-6">
@@ -83,7 +69,8 @@
                                 <h6 class="mb-0">Salse & Revenue</h6>
                                 <a href="">Show All</a>
                             </div>
-                            <canvas id="salse-revenue"></canvas>
+                            {% comment %} <canvas id="salse-revenue"></canvas> {% endcomment %}
+                            <canvas id="myChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -95,7 +82,7 @@
             <div class="container-fluid pt-4 px-4">
                 <div class="bg-light text-center rounded p-4">
                     <div class="d-flex align-items-center justify-content-between mb-4">
-                        <h6 class="mb-0">Recent Salse</h6>
+                        <h6 class="mb-0">Recent Sales</h6>
                         <a href="">Show All</a>
                     </div>
                     <div class="table-responsive">
@@ -112,56 +99,23 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                {% for order in orders %}
                                 <tr>
                                     <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
+                                    <td>{{ order.order_date }}</td>
+                                    <td>{{ order.order_id }}</td>
+                                    <td>{{ orders.user }}</td>
+                                    <td>₹{{ order.total_price }}</td>
+                                    <td>{{ order.order_status }}</td>
                                     <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
                                 </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
-                                <tr>
-                                    <td><input class="form-check-input" type="checkbox"></td>
-                                    <td>01 Jan 2045</td>
-                                    <td>INV-0123</td>
-                                    <td>Jhon Doe</td>
-                                    <td>$123</td>
-                                    <td>Paid</td>
-                                    <td><a class="btn btn-sm btn-primary" href="">Detail</a></td>
-                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
+            
             <!-- Recent Sales End -->
 
 
@@ -284,8 +238,64 @@
                     </div>
                 </div>
             </div>
+            <a href="{% url 'generate_sales_report_pdf' %}" class="btn btn-primary">Download Sales Report PDF</a>
             <!-- Widgets End -->
 </body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx1 = document.getElementById('myChart');  // Use unique ID or variable name
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Total Order Per Month',
+                data: {{ data|safe }},
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const ctx2 = document.getElementById('monthChart');  // Use a different unique ID or variable name
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: {{ labels|safe }},
+            datasets: [{
+                label: 'Total Order Per Month',
+                data: {{ data|safe }},
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+
+
+
+
+
+
+
 {% endblock body %}
 
-</html>
+
+

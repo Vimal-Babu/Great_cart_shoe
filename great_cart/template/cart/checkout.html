@@ -20,7 +20,7 @@
                         {% csrf_token %}
                         {% for addres in address %}
                             <label  class="ml-3">
-                                <input type="radio" name="selected_address" value="{{ addres.id }}"  >
+                                <input type="radio" name="selected_address" value="{{ addres.id }}" required>
                                 <br>
                                 {{ addres.full_name }} <br>
                                 {{ addres.address_line_1 }}<br>
@@ -31,17 +31,17 @@
                         {% endfor %}    
                         <h5>payment method</h5>
                         <label>
-                        <input type="radio" name="payment_method" value="Razorpay">
+                        <input type="radio" name="payment_method" value="Razorpay" required>
                             Razorpay (RPZ)
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="payment_method" value="COD">
+                            <input type="radio" name="payment_method" value="COD" required >
                             Cash on Delivery (COD)
                         </label>
                         <br>
                         <label>
-                            <input type="radio" name="payment_method" value="Wallet">
+                            <input type="radio" name="payment_method" value="Wallet" required>
                             Wallet
                         </label>
                         <br>

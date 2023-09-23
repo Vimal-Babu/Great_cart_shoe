@@ -3,7 +3,7 @@ from authentication.models import CustomUser
 
 # Create your models here.
 
-class wallet(models.Model):
+class Wallet(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     balance = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     

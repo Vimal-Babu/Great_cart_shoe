@@ -3,55 +3,51 @@
 {% block title %}GreatKart {% endblock %}
 {% block content %}
 
+<style>
+    .carousel-item {
+        text-align: center;
+        overflow: hidden; /* Ensure images don't overflow the fixed height */
+        height: 400px; /* Set a fixed height for the carousel items */
+    }
+
+    .carousel-item img {
+        max-height: 100%; /* Ensure the image fits within the fixed height */
+        max-width: 100%; /* Ensure the image fits within the carousel item */
+        display: inline-block;
+        vertical-align: middle; /* Center the image vertically */
+    }
+</style>
 
 
-{% comment %} 
-<div id="banner-carousel" class="carousel slide" data-ride="carousel">
-    <!-- Indicators -->
+<div id="bannerCarousel" class="carousel slide mt-3" data-ride="carousel">
     <ol class="carousel-indicators">
-        {% for banner in active_banners %}
-        <li data-target="#banner-carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+        {% for banner in banners %}
+        <li data-target="#bannerCarousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
         {% endfor %}
     </ol>
-
-    <!-- Slides -->
     <div class="carousel-inner">
-        {% for banner in active_banners %}
+        {% for banner in banners %}
         <div class="carousel-item {% if forloop.first %}active{% endif %}">
-            <a href="{% if banner.product %}{% url 'product_detail' banner.product.id %}{% elif banner.category %}{% url 'category_detail' banner.category.id %}{% endif %}">
-                <img src="{{ banner.image.url }}" alt="Banner Image">
-            </a>
+            <img src="{{ banner.image.url }}" alt="{{ banner.title }}">
+            <div class="carousel-caption">
+                <h3>{{ banner.title }}</h3>
+                <p>{{ banner.description }}</p>
+                {% if banner.link %}
+                <a href="{{ banner.link }}" class="btn btn-primary">Learn More</a>
+                {% endif %}
+            </div>
         </div>
         {% endfor %}
     </div>
-
-    <!-- Controls -->
-    <a class="carousel-control-prev" href="#banner-carousel" role="button" data-slide="prev">
+    <a class="carousel-control-prev" href="#bannerCarousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
     </a>
-    <a class="carousel-control-next" href="#banner-carousel" role="button" data-slide="next">
+    <a class="carousel-control-next" href="#bannerCarousel" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
     </a>
-</div> {% endcomment %}
-
-
-
-
-
-
-
-
-
-
-    <section class="section-intro padding-y-sm">
-        <div class="container">
-            <div class="intro-banner-wrap">
-                <img src="{% static 'images/banners/1.jpeg' %}" class="img-fluid rounded">
-            </div>
-        </div> <!-- container //  -->
-    </section> 
+</div>
 
 
 <section class="section-name padding-y-sm">

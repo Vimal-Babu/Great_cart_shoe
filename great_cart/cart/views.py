@@ -6,6 +6,14 @@ from authentication.models import Address
 from order.models import Orders
 from django.shortcuts import get_object_or_404
 import uuid
+from wallet.models import Wallet
+from django.http import FileResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from django.http import HttpResponse
+from io import BytesIO
+import reportlab
+
 
 
 
@@ -187,33 +195,94 @@ def your_orders_page(request):
     return render(request,'order/your_orders_page.html',context)
 
 
+def generate_pdf(request, order_id):
+    # Create a BytesIO buffer to receive the PDF data
+    order = get_object_or_404(Orders, id=order_id)
+    buffer = BytesIO()
+
+    # Create the PDF object, using the BytesIO buffer as its "file"
+    p = canvas.Canvas(buffer, pagesize=letter)
+    y = 750
+
+    # Set up styles for the heading and content
+    heading_style = {
+        'fontName': 'Helvetica-Bold',
+        'fontSize': 16,
+        'alignment': 1,  # Center-aligned text
+        'textColor': (0, 0, 0)  # Black color
+    }
+
+    content_style = {
+        'fontName': 'Helvetica',
+        'fontSize': 12,
+        'textColor': (0, 0, 0)  # Black color
+    }
+
+    # Heading
+    p.setFont(heading_style['fontName'], heading_style['fontSize'])
+    p.setFillColorRGB(*heading_style['textColor'])  # Use setFillColorRGB
+    p.drawString(100, y, f"Invoice ")
+    y -= 30  # Move down for spacing
+
+    # Order details
+    p.setFont(content_style['fontName'], content_style['fontSize'])
+    p.setFillColorRGB(*content_style['textColor'])  # Use setFillColorRGB
+    p.drawString(100, y, f"invoice number: {order.id}")
+    y -= 20
+    p.drawString(100, y, f"Date: {order.order_date}")
+    y -= 20
+    p.drawString(100, y, f"Product Name: {order.product.product_name}")
+    y -= 20
+    p.drawString(100, y, f"Order Status: {order.order_status}")
+    y -= 20
+    p.drawString(100, y, f"Order Quantity: {order.quantity}")
+    y -= 20
+    p.drawString(100, y, f"Delivery Address: {order.delivery_address.address_line_1}")
+    y -= 20
+    p.drawString(100, y, f"City: {order.delivery_address.city}")
+    y -= 20
+    p.drawString(100, y, f"State: {order.delivery_address.state}")
+    y -= 20
+    p.drawString(100, y, f"Zip Code: {order.delivery_address.Zipcode}")
+    y -= 20
+    p.drawString(100, y, f"Landmark: {order.delivery_address.landmark}")
+    y -= 20
+    p.drawString(100, y, f"Total Price: ${order.total_price}")
+    
+    # Close the PDF object cleanly
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    response = HttpResponse(buffer.read(), content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="order_{order.id}.pdf"'
+
+    return response
+
+def cancel_order_button(request, order_id):
+    user_wallet = None
+    order = Orders.objects.get(id=order_id)
+    if order.payment_type != 'COD':
+        amount_to_return = order.total_price
+        print(order.total_price)
+        print(amount_to_return)
+        try:
+            user_wallet  = Wallet.objects.get(user=order.user)
+            user_wallet.balance += amount_to_return 
+            user_wallet.save()
+        except Wallet.DoesNotExist:
+            user_wallet = Wallet.objects.create(user=order.user)
+            
+    order.order_status = 'Canceled'
+    order.save()
+    return redirect('your_orders_page')  
 
 def order_details(request):
     return render(request,'order/order_details.html')
 
-
-
 def payment_page(request):
     # NOWWWWWWWWWWW after payment???
     return render(request,'cart/payment_page.html')
-
-
-
-
-
-# def place_order(request):
-#     if request.method == 'POST':
-#         # Extract form data, such as delivery address, payment type, etc.
-#         delivery_address_id = request.POST.get('default_address')  # Example, adjust this based on your form fields
-#         payment_type = request.POST.get('payment_type')  # Example, adjust this based on your form fields
-
-#         # Create a new order record in the database
-#         order = Order.objects.create(
-#             user=request.user,
-#             delivery_address_id=delivery_address_id,
-#             payment_type=payment_type,
-#             total_price=request.POST.get('total_price'),  # You can extract this from the form
-#             # Add other order details as needed
-#         )
-
 

@@ -2,7 +2,28 @@
 {% load static %}
 {% block title %}My Wallet{% endblock %}
 {% block content %}
+<div class="col-md-12">
+    <div class="card bg-primary text-white">
+        <div class="card-body text-center">
+            <h1 class="mt-4">Wallet</h1>
+            <p class="mb-2">User: {{ wallet.user.first_name }}</p>
+            <p class="mb-4">Balance: ${{ wallet.balance }}</p>
+
+            <!-- Withdrawal form -->
+            <form method="post" action="#">
+                {% csrf_token %}
+                <div class="form-group">
+                </div>
+                {% comment %} <button type="submit" class="btn btn-success">Withdraw</button> {% endcomment %}
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
 welcome {{request.user.first_name}} 
 wallet {{user_wallet}}
 
-{% endblock %}
+<div class="inner_page-banner one-img" style="text-align: center; background: url('{% static 'lap/images/blackbanner.jpg' %}') no-repeat center; background-size: cover; min-height: 350px;">
+    <!-- Content within the banner -->
+</div>
+<div class="container d-flex align-items-center justify-content-center" style="height: 100vh;">

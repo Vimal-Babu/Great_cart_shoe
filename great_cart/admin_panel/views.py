@@ -5,6 +5,20 @@ from .models import Product,Category,Brand,Banner
 from authentication.models import *
 from django.contrib.auth.decorators import login_required
 from order.models import Orders
+from wallet.models import Wallet
+from django.db.models import Count,Sum
+from django.db.models.functions import TruncMonth
+from django.db.models import IntegerField
+from django.db.models.expressions import F
+from django.http import HttpResponse
+from django.shortcuts import render
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from order.models import Orders 
+from reportlab.lib.pagesizes import letter
+
 
 
 #............Admin...login...and....index....start...............#
@@ -28,15 +42,101 @@ def admin_login(request):
             messages.error(request,"Invalid Credentials")
     return render(request,"Admin/AdminFunctions/admin_login.html")  
 
+@login_required
 def handle_logout(request):
     logout(request)
     messages.info(request,"Logout Success")
     return redirect('handle_login') 
 
 
-
 def admin_index(request):
+    # Calculate labels (months) and data (number of orders) for the chart
+    orders_by_month = Orders.objects.annotate(month=TruncMonth('order_date')).values('month').annotate(num_orders=Count('id'))
+    labels = [order['month'].strftime('%B %Y') for order in orders_by_month]
+    data = [order['num_orders'] for order in orders_by_month]
+    total_price_sum = Orders.objects.aggregate(total_price_sum=Sum('total_price'))['total_price_sum']
+    total_price_sum = int(total_price_sum)  # Convert to integer
+    orders = Orders.objects.all()
+    print( total_price_sum)
+    context = {
+        'labels': labels,
+        'data': data,
+        'total_price_sum': total_price_sum,
+        'orders':orders,
+    }
+    return render(request, 'Admin/admin_index.html', context)
+
+def sales_and_revenue_chart(request):
     return render(request,'Admin/admin_index.html')
+
+
+def generate_sales_report_pdf(request):
+    # Create a BytesIO buffer to receive the PDF data
+    buffer = BytesIO()
+
+    # Create the PDF object, using the BytesIO buffer as its "file"
+    p = canvas.Canvas(buffer, pagesize=letter)
+    y = 750  # Starting Y-coordinate
+
+    # Set up styles for the heading and content
+    heading_style = {
+        'fontName': 'Helvetica-Bold',
+        'fontSize': 16,
+        'alignment': 1,  # Center-aligned text
+        'textColor': (0, 0, 0)  # Black color
+    }
+
+    content_style = {
+        'fontName': 'Helvetica',
+        'fontSize': 12,
+        'textColor': (0, 0, 0)  # Black color
+    }
+
+    # Heading
+    p.setFont(heading_style['fontName'], heading_style['fontSize'])
+    p.setFillColorRGB(*heading_style['textColor'])  # Use setFillColorRGB
+    p.drawString(100, y, "Sales Report")
+    y -= 30  # Move down for spacing
+
+    # Fetch all orders data from the database
+    orders = Orders.objects.all()
+
+    # Loop through orders and generate report for each
+    for order in orders:
+        # Order details
+        p.setFont(content_style['fontName'], content_style['fontSize'])
+        p.setFillColorRGB(*content_style['textColor'])  # Use setFillColorRGB
+        p.drawString(100, y, f"Order ID: {order.id}")
+        y -= 20
+        p.drawString(100, y, f"Date: {order.order_date}")
+        y -= 20
+        p.drawString(100, y, f"Product Name: {order.product.product_name}")
+        y -= 20
+        p.drawString(100, y, f"Order Status: {order.order_status}")
+        y -= 20
+        p.drawString(100, y, f"Order Quantity: {order.quantity}")
+        y -= 20
+        p.drawString(100, y, f"Total Price: ${order.total_price}")
+        y -= 40  # Move down for the next order
+
+        if y < 50:
+            p.showPage()
+            y = 750  # Reset Y-coordinate
+
+    # Close the PDF object cleanly
+    p.showPage()
+    p.save()
+
+    # FileResponse sets the Content-Disposition header so that browsers
+    # present the option to save the file.
+    buffer.seek(0)
+    response = HttpResponse(buffer.read(), content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="sales_report.pdf"'
+
+    return response
+
+
+
 
 #............Admin...login...and....index....end...............#
 
@@ -46,7 +146,7 @@ def admin_index(request):
 
 
 #.........All......about...Products....start............#
-
+@login_required
 def handle_product(request):
     products = Product.objects.all()
     categories = Category.objects.filter(is_available=True)
@@ -219,7 +319,7 @@ def user_unblock(request,id):
 #.............................USER.........end.........................#
 
 #.............................Order.........start.........................#
-#******************************************************************************************currentley workin on*******************
+
 def list_order(request):
     orders = Orders.objects.all().order_by('id')
     context = {
@@ -229,7 +329,16 @@ def list_order(request):
 
 def cancel_order(request,id):
     order = get_object_or_404(Orders, id=id)
-    # o = Orders.objects.get(id = id)
+    if order.order_status != 'Cancelled' and order.payment_type != 'COD':
+        amount_to_return = order.total_price
+        try:
+            user_wallet = Wallet.objects.get(user=order.user)
+            user_wallet.balance += amount_to_return
+            user_wallet.save()
+        except Wallet.DoesNotExist:
+            user_wallet = Wallet.objects.create(user=order.user)
+
+    # order = get_object_or_404(Orders, id=id)
     order.order_status = 'Cancelled'
     order.save()
     return redirect('list_order')
@@ -292,21 +401,43 @@ def delete_brand(request,id):
 
 #.............................Brand.........end.........................#
 
+
+
 #.............................Banner Management.........start.........................#
+# active = models.BooleanField(default=True)
+# image = models.ImageField(upload_to='photo/banners/')
+
+def add_banner(request):
+    if request.method =='POST':
+        banner_image = request.FILES.get('bannerImage')
+        active = request.POST.get('active')
+        # if active == True:
+        #     active_bool = True
+        # else:
+        #     active_bool = False
+                
+        banner = Banner.objects.create(
+            image = banner_image,
+            active=active,
+        )
+        return redirect('Banner_management')
+    return render(request,"Admin/AdminFunctions/banner_management.html")
+
 
 def Banner_management(request):
     banners = Banner.objects.all()
-    active = models.BooleanField(default=True)
-    image = models.ImageField(upload_to='photo/banners/')
     context = {
         'banners':banners,
-        'active':active,
-        'image':image,
-        
     }
     return render(request,'Admin/AdminFunctions/banner_management.html',context)
 
+# {% url 'remove_banner' banner.id %}
 
-    
+def remove_banner(request,id):
+    banner = get_object_or_404(Banner,id = id)
+    banner.delete()
+    return redirect('Banner_management')
+
 
 #.............................Banner Management.........End.........................#
+

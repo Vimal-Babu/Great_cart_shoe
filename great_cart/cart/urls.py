@@ -12,9 +12,10 @@ urlpatterns = [
     path('order_details', views.order_details, name='order_details'),
     path('order_success/<uuid:order_id>/',views.order_success, name="order_success"),
     path('your_orders_page', views.your_orders_page, name='your_orders_page'),
-    #path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add-to-cart'),
-    # path('add_cart/<int:product_id>/', views.add_cart, name='add_cart'),
-    # path('view_cart', views.view_cart, name='view_cart'),
-
+    path('cancel_order_button/<int:order_id>/', views.cancel_order_button, name='cancel_order_button'),
+    path('generate_pdf/<int:order_id>/', views.generate_pdf, name='generate_pdf'),
 ]
 
+#path('add-to-cart/<int:product_id>/', views.add_to_cart, name='add-to-cart'),
+# path('add_cart/<int:product_id>/', views.add_cart, name='add_cart'),
+# path('view_cart', views.view_cart, name='view_cart'),
