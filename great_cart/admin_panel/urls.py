@@ -41,4 +41,9 @@ urlpatterns = [
     path('add_banner',views.add_banner,name = 'add_banner'),
     path('remove_banner/<int:id>',views.remove_banner,name = 'remove_banner'),
     path('generate_sales_report_pdf', views.generate_sales_report_pdf, name='generate_sales_report_pdf'),
+    
+    path('add_multiple_image',views.add_multiple_image,name ='add_multiple_image'),
+    
+    path('search',views.search,name = 'search'),
+    path('search_suggestions',views.search_suggestions,name = 'search_suggestions'),
 ]

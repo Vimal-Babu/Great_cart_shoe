@@ -6,112 +6,204 @@
 
 {% block content %}
 
-
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-header py-3">
-                    <h5 class="mb-0 text-center">Billing details</h5>
-                    <button class="btn btn-outline-primary"><a href="{% url 'user_addAddress' %}">manage address</a></button>
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-8 col-lg-8 mb-4">
+                <div class="card mb-4 border shadow-0">
+                    <div class="p-4 d-flex justify-content-between">
+                        <div class="">
+                            <h5>Forget to add address?..Or You need to add a new one ?</h5>
+                            <p class="mb-0 text-wrap ">you can add an address or you can edit your current address</p>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-center flex-column flex-md-row">
+                            <a href="{% url 'user_addAddress' %}" class="btn btn-outline-primary me-0 me-md-2 mb-2 mb-md-0 w-100">Add Address</a>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form method="post" action="{% url 'place_order' %}">
-                        {% csrf_token %}
-                        {% for addres in address %}
-                            <label  class="ml-3">
-                                <input type="radio" name="selected_address" value="{{ addres.id }}" required>
-                                <br>
-                                {{ addres.full_name }} <br>
-                                {{ addres.address_line_1 }}<br>
-                                {{ addres.phone }}<br>
-                                {{ addres.landmark }}<hr>
-                            </label>
-                            <br>
-                        {% endfor %}    
-                        <h5>payment method</h5>
-                        <label>
-                        <input type="radio" name="payment_method" value="Razorpay" required>
-                            Razorpay (RPZ)
-                        </label>
-                        <br>
-                        <label>
-                            <input type="radio" name="payment_method" value="COD" required >
-                            Cash on Delivery (COD)
-                        </label>
-                        <br>
-                        <label>
-                            <input type="radio" name="payment_method" value="Wallet" required>
-                            Wallet
-                        </label>
-                        <br>
-                        <div class="d-grid gap-2 col-6 mx-auto text-center">
-                            <button type="submit" class="btn btn-success">Place Order</button>
+                <!-- Checkout -->
+                <div class="container mt-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-6">
+                            <div class="card mb-4">
+                                <div class="card-header py-3">
+                                    <h5 class="mb-0 text-center">Checkout Details</h5>
+                                </div>
+                                <div class="card-body">
+                                    {% if messages %}
+                                    <div id="messageDiv" class="alert alert-success">
+                                        <ul>
+                                            {% for message in messages %}
+                                            <li>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                    
+                                    <script>
+                                    // JavaScript code to hide the message div after 3 seconds
+                                    setTimeout(function() {
+                                        var messageDiv = document.getElementById("messageDiv");
+                                        if (messageDiv) {
+                                            messageDiv.style.display = "none";
+                                        }
+                                    }, 3000); // 3000 milliseconds (3 seconds)
+                                    </script>
+                                    
+                                    <form method="post" action="{% url 'place_order' %}">
+                                        {% csrf_token %}
+                                        {% for addres in addresses %}
+                                            <label  class="ml-3">
+                                                <input type="radio" name="selected_address" value="{{ addres.id }}" required>
+                                                <br>
+                                                {{ addres.full_name }} <br>
+                                                {{ addres.address_line_1 }}<br>
+                                                {{ addres.phone }}<br>
+                                                {{ addres.landmark }}<hr>
+                                            </label>
+                                            <br>
+                                        {% endfor %}    
+                                        {% if messages %}
+                                    <div id="messageDiv" class="alert alert-success">
+                                        <ul>
+                                            {% for message in messages %}
+                                            <li>{{ message }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                    {% endif %}
+                                        <h5>payment method</h5>
+                                        <br>
+                                            <label>
+                                                <input type="radio" name="payment_method" value="COD" required >
+                                                Cash on Delivery (COD)
+                                            </label>
+                                            <br>
+                                            <label>
+                                                <input type="radio" name="payment_method" value="wallet" required >
+                                                Wallet
+                                            </label>
+                                            <br>
+                                            <label>
+                                                <input type="radio" id="rzp-button1" name="payment_method" value="razor" required >
+                                                razorpay
+                                            </label>
+                                        <br>
+                                        <br>
+                                        <div class="d-grid gap-2 col-6 mx-auto text-center">
+                                            <button type="submit" class="btn btn-success mb-3">Place Order</button>
+                                        </div>
+                                    </form>
+                                    {% comment %} <label>
+                                        <a  class="btn btn-primary btn-lg btn-block  text-center"  href="{% url 'razorpay_payment_view' %}?user_id={{ request.user.id }}">Pay with Razorpay</a>
+                                    </label> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Checkout -->
+            </div>
+            <div class="col-xl-4 col-lg-4 d-flex justify-content-center justify-content-lg-end">
+                <div class="ms-lg-4 mt-4 mt-lg-0" style="max-width: 320px;">
+                        {% for cart in cart_item %}
+                                <hr />
+                                <h6 class="text-dark my-4">Items in cart</h6>
+                            <div class="d-flex align-items-center mb-4">
+                                <div class="me-3 position-relative">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill badge-secondary">{{cart.quantity}}
+                                    </span>
+                                    <img src="{{cart.product.image.url}}" style="height: 96px; width: 96px;" class="img-sm rounded border" />
+                                </div>
+                                <div class="">
+                                    <p class="nav-link">
+                                        {{cart.product.product_name}}
+                                        <br />
+                                        {{cart.product.description}}
+                                    </p>
+                                    <div class="price text-muted ml-3 ">Price: ₹{{cart.cart_price}}.00</div>
+                                </div>
+                            </div>
+                            <hr />
+                        {% endfor %}
+                        {% if messages %}
+                        <div class="alert alert-success">
+                            <ul>
+                                {% for message in messages %}
+                                <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %} 
+                    <form method="post" action="{% url 'apply_coupon' %}">
+                        {% csrf_token %} <!-- Include the CSRF token -->
+                        <div class="input-group mt-3 mb-4">
+                            <input type="text" class="form-control border" id="couponCode" placeholder="Coupon code" name="coupon_code">
+                            <button class="btn btn-light text-primary border" id="applyCoupon">Apply</button>
+                        </div>
+                        <!-- Display Applied Coupon Details -->
+                        {% if applied_coupon %}
+                        <div class="alert alert-success mt-3">
+                            Coupon "{{ applied_coupon.code }}" applied successfully. Discount: ₹{{ applied_coupon.discount }}
+                        </div>
+                        {% endif %}
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-2">Total price:</p>
+                            <p class="mb-2">₹{{ total_price }}.00</p>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</div>
+</section>
+{% comment %} <a id="rzp-button1" class="btn btn-primary btn-lg btn-block">Pay with Razorpay</a> {% endcomment %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    // Get references to the radio buttons and wallet payment button
+    const walletRadioButton = document.querySelector('input[name="payment_method"][value="Wallet"]');
+    const walletPaymentButton = document.getElementById('wallet-payment-button');
+
+    // Initially hide the wallet payment button
+    walletPaymentButton.style.display = 'none';
+
+    // Add an event listener to the radio button to toggle the wallet payment button visibility
+    walletRadioButton.addEventListener('change', function() {
+        if (this.checked) {
+            walletPaymentButton.style.display = 'block'; // Show the button when "Pay with Wallet" is selected
+        } else {
+            walletPaymentButton.style.display = 'none'; // Hide the button when other options are selected
+        }
+    });
+</script>
 
 
+<script>
+    var options = {
+        "key": "rzp_test_BESijuObTRn44L",
+        "amount": {{ total_price|floatformat:2 }} * 100,
+        "currency": "INR",
+        "name": "great cart",
+        "description": "Purchase",
+        "image": "https://example.com/your_logo.png",
+        "handler": function (response) {
+            console.log('payment success baby');
+            alert("Payment successful!");
+            var user_id = new URLSearchParams(window.location.search).get('user_id');
+            // Include payment status as a parameter
+            window.location.href = '/cart/razorpay_payment_view/?user_id=' + user_id + '&payment_status=success';
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    
+    var rzp1 = new Razorpay(options);
+    document.getElementById('rzp-button1').addEventListener('click', function (e) {
+        rzp1.open();
+        e.preventDefault();
+    });
+</script>
 
 {% endblock %}
 
-
-
- <!-- First Row of Address Fields -->
-                        {% comment %} <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="full_name" class="form-label">Full Name</label>
-                                <input type="text" class="form-control" value="{{ address.full_name }}" id="full_name"
-                                    name="full_name">
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="phone" class="form-label">Phone</label>
-                                <input type="tel" class="form-control" value="{{ address.phone }}" id="phone" name="phone">
-                            </div>
-                        </div>
-
-                        <!-- Second Row of Address Fields -->
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="address_line_1"
-                                    style="font-weight: bold; display: block; margin-top: 10px; margin-bottom: 5px;">Address
-                                    Line 1:</label>
-                                <input type="text" id="address_line_1" name="address_line_1"
-                                    value="{{ address.address_line_1 }}" required
-                                    style="width: 100%; padding: 5px; border: 1px solid #ccc; border-radius: 5px;"><br>
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="zipcode" class="form-label">Zipcode</label>
-                                <input type="text" class="form-control" value="{{ address.Zipcode }}" id="zipcode"
-                                    name="zipcode">
-                            </div>
-                        </div>
-
-                        <!-- Third Row of Address Fields -->
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="state" class="form-label">State</label>
-                                <input type="text" class="form-control" value="{{ address.state }}" id="state" name="state">
-                            </div>
-                            <div class="mb-3 col-md-6">
-                                <label for="city" class="form-label">City</label>
-                                <input type="text" class="form-control" value="{{ address.city }}" id="city" name="city">
-                            </div>
-                        </div>
-
-                        <!-- Fourth Row of Address Fields -->
-                        <div class="row">
-                            <div class="mb-3 col-md-6">
-                                <label for="landmark" class="form-label">Landmark</label>
-                                <input type="text" class="form-control" value="{{ address.landmark }}" id="landmark"
-                                    name="landmark">
-                            </div>
-                        </div>
-
-                        <h5>select address</h5> {% endcomment %}
-                        <!-- Payment Method Radio Buttons Here -->
-            

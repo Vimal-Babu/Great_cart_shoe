@@ -45,8 +45,8 @@ INSTALLED_APPS = [
     'user_address',
     'cart',
     'store',
-    'offer',
     'wallet',
+    'coupon_management',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart_quantity',
             ],
         },
     },
@@ -125,6 +126,10 @@ USE_I18N = True
 
 USE_TZ = True
 
+TIME_ZONE = 'Asia/Kolkata'  # Change this to your desired timezone
+
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -168,3 +173,6 @@ LOGIN_URL = 'login'  # Assuming 'login' is the name of your login URL pattern
 
 
 
+
+KEY = 'rzp_test_BESijuObTRn44L'
+SECRET = 'PSjXZ0MZC4Dd8LvaYxsg90zh'

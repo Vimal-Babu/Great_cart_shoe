@@ -38,7 +38,11 @@
                                     </option>
                                 {% endfor %}
                             </select>
+                            {% if order.order_status == 'Canceled' %}
+                            <button type="submit" class="btn btn-primary" disabled>Update Status</button>
+                            {% else %}
                             <button type="submit" class="btn btn-primary">Update Status</button>
+                            {% endif %}
                         </form>
                     </td>
                     <td>{{order.order_status}}</td>

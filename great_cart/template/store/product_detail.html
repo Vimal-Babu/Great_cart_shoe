@@ -1,55 +1,94 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}GreatKart | One of the Biggest Online Shopping Platform{% endblock %}
+{% block title %}Product {% endblock %}
 
 {% block content %}
+<style>
+    .small-images {
+        display: flex;
+        margin-top: 20px;
+    }
+
+    .small-image-box {
+        width: 20%;
+        cursor: pointer;
+    }
+
+    .small-image {
+        max-width: 100%;
+        height: auto;
+        margin-bottom: 10px;
+    }
+
+    #mainProductImageContainer {
+        position: relative; /* Create a positioning context for the zoom effect */
+        overflow: hidden; /* Hide the overflow of the container */
+    }
+
+    #mainProductImage {
+        max-width: 100%;
+        height: auto;
+        transition: transform 0.2s; /* Add a smooth transition for the zoom effect */
+        cursor: move; /* Set cursor to move when hovering over the zoomed image */
+    }
+
+    .zoomed {
+        transform-origin: 0 0;
+    }
+</style>
 <section class="section-content padding-y">
     <div class="container">
         <!-- ============================ COMPONENT 1 ================================= -->
         <div class="card text-center">
             <div class="row no-gutters">
                 <aside class="col-md-6">
-                    <article class="gallery-wrap"> 
-                        <div class="img-big-wrap">
-                            <img src="{% if product.image %}{{ product.image.url }}{% endif %}">
+                    <article class="gallery-wrap">
+                        <div class="img-big-wrap" id="mainProductImageContainer">
+                            <img src="{% if product.image %}{{ product.image.url }}{% endif %}" id="mainProductImage">
                         </div>
                     </article>
                 </aside>
                 <main class="col-md-6 border-left d-flex align-items-center">
                     <article class="content-body text-left">
                         <h2 class="title">{{ product.product_name }}</h2>
-                        <div class="mb-3"> 
-                            <var class="price h4">${{ product.price }}</var> 
-                        </div> 
+                        <div class="mb-3">
+                            <var class="price h4">₹{{product.offer_price}}</var>
+                            <del class="price-old">₹{{ product.price }}</del>
+                        </div>
                         <p>{{ product.description }}</p>
                         <p>Brand: {{ product.brand }}</p>
                         <p>Category: {{ product.category }}</p>
                         <div class="toys single-item singlepage">
-                            <a class="btn btn-primary" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>     
-                                                    
-                            <!-- <button type="submit" class="toys-cart ptoys-cart add">Add to Cart</button> -->
-                            </form>
-                          </div>
-                        {% comment %} <a class="btn btn-primary" href="{% url 'add_to_cart' product.id %}">Add to Cart</a> {% endcomment %}
+                            <a class="btn btn-primary" href="{% url 'add_to_cart' product.id %}">Add to Cart</a>
+                        </div>
+                        <div class="row mt-5">
+                            <div class="col-lg-12">
+                                <div class="small-images">
+                                    {% for image in product_images %}
+                                    <div class="small-image-box" onclick="showImage('{{ image.image.url }}')">
+                                        <img src="{{ image.image.url }}" class="small-image" alt="Small Image">
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
                     </article>
                 </main>
-                
             </div>
         </div>
-        
         <!-- ============================ COMPONENT 1 END ================================= -->
         <hr>
         <div class="row">
             <div class="col-md-12">
                 <header class="section-heading">
-                    <h3>Customer Reviews </h3>  
+                    <h3>Customer Reviews </h3>
                 </header>
                 <article class="box mb-3">
                     <div class="icontext w-100">
                         <img src="{% static './images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle">
                         <div class="text">
-                            <span class="date text-muted float-md-right">24.04.2020 </span>  
+                            <span class="date text-muted float-md-right">24.04.2020 </span>
                             <h6 class="mb-1">Mike John </h6>
                         </div>
                     </div>
@@ -65,5 +104,42 @@
         </div>
     </div> <!-- container .//  -->
 </section>
+
+<script>
+    var mainProductImage = document.getElementById('mainProductImage');
+    var mainProductImageContainer = document.getElementById('mainProductImageContainer');
+    var isDragging = false;
+    var startX, startY, offsetX = 0, offsetY = 0;
+
+    mainProductImage.addEventListener('mousedown', function (e) {
+        isDragging = true;
+        startX = e.clientX;
+        startY = e.clientY;
+        mainProductImage.style.cursor = 'grabbing';
+    });
+
+    document.addEventListener('mousemove', function (e) {
+        if (!isDragging) return;
+        var dx = e.clientX - startX;
+        var dy = e.clientY - startY;
+        offsetX += dx;
+        offsetY += dy;
+        mainProductImage.style.transform = `scale(3) translate(${offsetX}px, ${offsetY}px)`;
+        startX = e.clientX;
+        startY = e.clientY;
+    });
+
+    document.addEventListener('mouseup', function () {
+        isDragging = false;
+        mainProductImage.style.cursor = 'move';
+    });
+
+    function showImage(imageUrl) {
+        mainProductImage.src = imageUrl;
+        mainProductImage.style.transform = 'scale(1)'; // Reset zoom and position
+        offsetX = 0;
+        offsetY = 0;
+    }
+</script>
 
 {% endblock %}

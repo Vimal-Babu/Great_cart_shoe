@@ -7,7 +7,7 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop ">
     <div class="container">
-        <h2 class="title-page" style ="color:white;">Welcome to Our Store</h2>
+        <h2 class="title-page" style ="color:black;">Welcome to Our Store</h2>
     </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION INTRO END// ========================= -->
@@ -29,86 +29,76 @@
 			<div class="card-body">
 				
 				<ul class="list-menu">
-				<li><a href="#">Men </a></li>
-				<li><a href="#">Woman </a></li>
+				<li><a href="{% url 'men' %}">Men </a></li>
+				<li><a href="{% url 'Woman' %}">Woman </a></li>
+				<li><a href="{% url 'kids' %}">Kids </a></li>
 				</ul>
 
 			</div> <!-- card-body.// -->
 		</div>
 	</article> <!-- filter-group  .// -->
-	{% comment %} <article class="filter-group">
-		<header class="card-header">
-			<a href="#" data-toggle="collapse" data-target="#collapse_4" aria-expanded="true" class="">
-				<i class="icon-control fa fa-chevron-down"></i>
-				<h6 class="title">Sizes </h6>
-			</a>
-		</header>
-		<div class="filter-content collapse show" id="collapse_4" style="">
-			<div class="card-body">
-				<label class="checkbox-btn">
-					<input type="checkbox">
-					<span class="btn btn-light"> XS </span>
-				</label>
-
-				<label class="checkbox-btn">
-					<input type="checkbox">
-					<span class="btn btn-light"> SM </span>
-				</label>
-
-				<label class="checkbox-btn">
-					<input type="checkbox">
-					<span class="btn btn-light"> LG </span>
-				</label>
-
-				<label class="checkbox-btn">
-					<input type="checkbox">
-					<span class="btn btn-light"> XXL </span>
-				</label>
-			</div><!-- card-body.// -->
-		</div>
-	</article> <!-- filter-group .// --> {% endcomment %}
 	
+
 	<article class="filter-group">
 		<header class="card-header">
-			<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+			<a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
 				<i class="icon-control fa fa-chevron-down"></i>
-				<h6 class="title">Price range </h6>
+				<h6 class="title">Brand</h6>
 			</a>
 		</header>
-		<div class="filter-content collapse show" id="collapse_3" style="">
+		<div class="filter-content collapse show" id="collapse_1" style="">
 			<div class="card-body">
 				
-				<div class="form-row">
-				<div class="form-group col-md-6">
-					<label>Min</label>
-				<!-- <input class="form-control" placeholder="$0" type="number"> -->
-					<select class="mr-2 form-control">
-						<option value="0">₹0</option>
-						<option value="50">₹50</option>
-						<option value="100">₹100</option>
-						<option value="150">₹150</option>
-						<option value="200">₹200</option>
-						<option value="500">₹500</option>
-						<option value="1000">₹1000</option>
-					</select>
-				</div>
-				<div class="form-group text-right col-md-6">
-					<label>Max</label>
-					<select class="mr-2 form-control">
-						<option value="50">₹50</option>
-						<option value="100">₹100</option>
-						<option value="150">₹150</option>
-						<option value="200">₹200</option>
-						<option value="500">₹500</option>
-						<option value="1000">₹1000</option>
-						<option value="2000">₹2000+</option>
-					</select>
-				</div>
-				</div> <!-- form-row.// -->
-				<button class="btn btn-block btn-primary">Apply</button>
-			</div><!-- card-body.// -->
+				<ul class="list-menu">
+				<li><a href="{% url 'adidas' %}">Adidas </a></li>
+				<li><a href="{% url 'puma' %}">Puma </a></li>
+				<li><a href="{% url 'nike' %}">Nike </a></li>
+				<li><a href="{% url 'vance' %}">Vance </a></li>
+				</ul>
+
+			</div> <!-- card-body.// -->
 		</div>
-	</article> <!-- filter-group .// -->
+	</article>
+	
+
+
+	
+	<article class="filter-group">
+		<form action = "{% url 'filter_products' %}" method = "get">
+			<header class="card-header">
+				<a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true" class="">
+					<i class="icon-control fa fa-chevron-down"></i>
+					<h6 class="title">Price range</h6>
+				</a>
+			</header>
+			<div class="filter-content collapse show" id="collapse_3" style="">
+				<div class="card-body">
+					<div class="form-row">
+						<div class="form-group col-md-6">
+							<label>Min</label>
+							<select class="mr-2 form-control" name="min_price">
+								<option value="{{ min_price }}">₹{{ min_price }}</option>
+								<option value="1000">₹1000</option>
+								<option value="1500">₹1500</option> 
+								<!-- Add more options as needed -->
+							</select>
+						</div>
+						<div class="form-group text-right col-md-6">
+							<label>Max</label>
+							<select class="mr-2 form-control" name="max_price">
+								<option value="{{ max_price }}">₹{{ max_price }}</option>
+								<option value="2000">₹2000</option>
+								<option value="4000">₹4000</option> 
+								<!-- Add more options as needed -->
+							</select>
+						</div>
+					</div> <!-- form-row.// -->
+				<button type = "submit" class="btn btn-block btn-primary">Apply</button>
+				</div><!-- card-body.// -->
+			</div>
+		</form>	
+	</article>
+	
 	
 </div> <!-- card.// -->
 
@@ -120,8 +110,42 @@
 			<span class="mr-md-auto">{{ products|length }} Items found</span>
 		</div>
 </header><!-- sect-heading -->
+
+
+<div class="container mt-5">
+	{% if selected_min and selected_max %}
+        <h2>Filtered Products</h2>
+        <p>Price Range: ₹{{ selected_min }} - ₹{{ selected_max }}</p>
+
+        <div class="row">
+            {% if filtered_products %}
+                {% for product in filtered_products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.product_name }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ product.product_name }}</h5>
+                                <p class="card-text">{{ product.description }}</p>
+                                <p class="card-text">Price: ₹{{ product.price }}</p>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-primary">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-md-12">
+                    <p>No products found within the selected price range.</p>
+                </div>
+            {% endif %}
+        </div>
+    {% else %} 
+        <h2>All Products</h2>
+
+
+
+
 <div class="row">
-	{% for product in products %}  
+{% for product in products %}  
     <a href="{% url 'product_detail' product.id %}">
     <div class="col-md-4">
         <figure class="card card-product-grid">
@@ -131,18 +155,18 @@
             <figcaption class="info-wrap">
                 <div class="fix-height">
                     <a href="" class="title">{{ product.product_name }}</a>
-                    <p>{{product.description}}</p>
                     <div class="price-wrap mt-2">
-                        <span class="price">₹{{ product.price }}</span>
-                        {% comment %} <del class="price-old">$1980</del> {% endcomment %}
+                        <span class="price">₹{{product.offer_price}}</span>
+                        <del class="price-old">₹{{ product.price }}</del> 
                     </div> <!-- price-wrap.// -->
                 </div>
-                {% comment %} <a href="#" class="btn btn-block btn-success">Added to cart</a> {% endcomment %}
+                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-block btn-primary">Add to cart</a> 
             </figcaption>
         </figure>
     </div> <!-- col.// -->
 </a>
 {% endfor %}
+{% endif %}
 
 
 
@@ -168,5 +192,3 @@
 
 <!-- ========================= SECTION CONTENT END// ========================= -->
 {% endblock %}
-
-

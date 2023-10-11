@@ -1,0 +1,69 @@
+{% extends 'Admin/adminlayouts/main.html' %}
+{% block title %}Product{% endblock title %}
+{% load static %}
+
+{% block body %}
+<div class="card-body">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Product Name</th>
+                <th scope="col">Product Image</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for img in image %}
+            <tr>
+                <td>{{ img.product.product_name }}</td>
+                <td>
+                    <img src="{{ img.image.url }}" alt="Product Image" width="50">
+                </td>
+                <td>
+                    <!-- Action Buttons -->
+                    <div class="btn-group">
+                        <a href="{% url 'add_multiple_image' %}" class="btn btn-outline-danger mx-1">Add Images</a>
+                        <button class="btn btn-outline-dark mx-1" data-bs-toggle="modal" id="addMultipleImagesModalLabel"
+                            data-bs-target="#editProductModal{{ product.id }}">Edit</button>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            
+            
+            
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Multiple Images Modal -->
+<div class="modal fade" id="addMultipleImagesModal" tabindex="-1" aria-labelledby="addMultipleImagesModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMultipleImagesModalLabel">Add Multiple Images for Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Add form fields here for multiple images -->
+                <form method="POST" action="{% url 'add_multiple_image' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Multiple Images Section -->
+                    <div class="form-group">
+                        <label for="productImages" class="form-label">Multiple Images</label>
+                        <input type="file" class="form-control" id="productImages" name="product_images" multiple
+                            required>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib.auth import authenticate,login,logout
 from django.contrib import messages
-from .models import Product,Category,Brand,Banner
+from .models import Product,Category,Brand,Banner,SearchQuery,ProductImage
 from authentication.models import *
 from django.contrib.auth.decorators import login_required
 from order.models import Orders
@@ -18,6 +18,8 @@ from io import BytesIO
 from reportlab.pdfgen import canvas
 from order.models import Orders 
 from reportlab.lib.pagesizes import letter
+from decimal import Decimal
+from django.db.models import Q
 
 
 
@@ -42,7 +44,7 @@ def admin_login(request):
             messages.error(request,"Invalid Credentials")
     return render(request,"Admin/AdminFunctions/admin_login.html")  
 
-@login_required
+
 def handle_logout(request):
     logout(request)
     messages.info(request,"Logout Success")
@@ -50,12 +52,14 @@ def handle_logout(request):
 
 
 def admin_index(request):
+    if not request.user.is_superuser:
+        return redirect('admin_login')
     # Calculate labels (months) and data (number of orders) for the chart
     orders_by_month = Orders.objects.annotate(month=TruncMonth('order_date')).values('month').annotate(num_orders=Count('id'))
     labels = [order['month'].strftime('%B %Y') for order in orders_by_month]
     data = [order['num_orders'] for order in orders_by_month]
     total_price_sum = Orders.objects.aggregate(total_price_sum=Sum('total_price'))['total_price_sum']
-    total_price_sum = int(total_price_sum)  # Convert to integer
+    total_price_sum = total_price_sum  # Convert to integer
     orders = Orders.objects.all()
     print( total_price_sum)
     context = {
@@ -68,16 +72,14 @@ def admin_index(request):
 
 def sales_and_revenue_chart(request):
     return render(request,'Admin/admin_index.html')
-
+                    
 
 def generate_sales_report_pdf(request):
     # Create a BytesIO buffer to receive the PDF data
     buffer = BytesIO()
-
     # Create the PDF object, using the BytesIO buffer as its "file"
     p = canvas.Canvas(buffer, pagesize=letter)
     y = 750  # Starting Y-coordinate
-
     # Set up styles for the heading and content
     heading_style = {
         'fontName': 'Helvetica-Bold',
@@ -135,24 +137,19 @@ def generate_sales_report_pdf(request):
 
     return response
 
-
-
-
 #............Admin...login...and....index....end...............#
-
-
-
-
 
 
 #.........All......about...Products....start............#
 @login_required
 def handle_product(request):
+    if not request.user.is_authenticated or not request.user.is_superuser:
+        return redirect('admin_login')
     products = Product.objects.all()
     categories = Category.objects.filter(is_available=True)
     brands = Brand.objects.all()
     # product_count = products.count()
-    print(products,"gfrhngiiiiiiiiiiiuj")
+    
 
     context = {
         "products" : products,
@@ -168,6 +165,7 @@ def add_product(request):
         product_name = request.POST.get('product_name')
         product_description = request.POST.get('description')
         product_price = request.POST.get('product_price')
+        offer_percentage = request.POST.get('offer_percentage')
         product_image = request.FILES.get('product_image')
         category_id = request.POST.get('category')
         stock = request.POST.get('stock')
@@ -180,6 +178,7 @@ def add_product(request):
             product_name=product_name,
             description=product_description,
             price = product_price,
+            offer_percentage = offer_percentage,
             category=category,
             stock = stock,
             new_arrivals=(new_arrival == '1'),  # Convert to boolean
@@ -188,10 +187,16 @@ def add_product(request):
         )
         product.save()
 
-        return redirect('handle_product')  # Replace 'product' with the name of the view that displays the list of products
-    # categories = Category.objects.all()
-    # brands = Brand.objects.all()
+        return redirect('handle_product')  
     # return render(request, 'Admin/AdminFunctions/product.html', {'categories': categories, 'brands': brands})
+def add_multiple_image(request):
+    image = ProductImage.objects.all()
+    products = Product.objects.all()
+    context = {
+        'products':products,
+        'image':image
+    }
+    return render(request,'Admin/AdminFunctions/product_multiple_image.html',context)
     
 
 def edit_product(request,product_id):
@@ -202,6 +207,7 @@ def edit_product(request,product_id):
         product_name = request.POST.get('product_name')
         product_description = request.POST.get('description')
         product_price = request.POST.get('product_price')
+        offer_percentage_str = request.POST.get('offer_percentage')
         product_image = request.FILES.get('product_image')
         category_id = request.POST.get('category')
         stock = request.POST.get('stock')
@@ -209,11 +215,16 @@ def edit_product(request,product_id):
         brand_id = request.POST.get('brand')  
         category = get_object_or_404(Category, id=category_id)
         brand = get_object_or_404(Brand, id=brand_id)
+        try:
+            offer_percentage =Decimal(offer_percentage_str)
+        except ValueError:
+            offer_percentage = Decimal('0.00')
 
         # Update other product details
         product.product_name = product_name
         product.description = product_description
         product.price = product_price
+        product.offer_percentage = offer_percentage
         if product_image:
             product.image = product_image
         product.category = category
@@ -321,7 +332,7 @@ def user_unblock(request,id):
 #.............................Order.........start.........................#
 
 def list_order(request):
-    orders = Orders.objects.all().order_by('id')
+    orders = Orders.objects.all().order_by('-order_date')
     context = {
         'orders':orders,
     }
@@ -441,3 +452,45 @@ def remove_banner(request,id):
 
 #.............................Banner Management.........End.........................#
 
+
+
+# def search(request):
+#     print('serch view works')
+#     if 'keyword' in request.GET:
+#         keyword = request.GET['keyword']
+#         products = Product.objects.filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
+#         context = {
+#             'products': products,
+#             'keyword': keyword,
+#         }
+    
+    
+#     return render(request, 'home/home.html', context)
+
+
+def search(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        
+        # Store the search query in your database using the SearchQuery model
+        SearchQuery.objects.create(user=request.user,query=keyword)
+        
+        products = Product.objects.filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword))
+        context = {
+            'products': products,
+            'keyword': keyword,
+        }
+    return render(request, 'home/home.html', context)
+
+
+from django.http import JsonResponse
+
+def search_suggestions(request):
+    if 'keyword' in request.GET:
+        keyword = request.GET['keyword']
+        # Query your database for suggestions based on the keyword
+        suggestions = Product.objects.filter(Q(description__icontains=keyword) | Q(product_name__icontains=keyword)).values('product_name')[:5]
+        suggestion_list = [suggestion['product_name'] for suggestion in suggestions]
+        return JsonResponse(suggestion_list, safe=False)
+
+    return JsonResponse([], safe=False)

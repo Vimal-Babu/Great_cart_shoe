@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Puma{% endblock %}
+{% block content %}
+
+<!-- ========================= SECTION PAGETOP ========================= -->
+<section class="section-pagetop">
+    <div class="container">
+        <h2 class="title-page" style="color:black;">Puma</h2>
+    </div> <!-- container // -->
+</section>
+<!-- ========================= SECTION PAGETOP END// ========================= -->
+
+<!-- ========================= SECTION INTRO END// ========================= -->
+
+<!-- ========================= SECTION CONTENT ========================= -->
+<section class="section-content padding-y">
+    <div class="container">
+        <div class="row">
+            <aside class="col-md-3">
+                <div class="card">
+                    <article class="filter-group">
+                        <header class="card-header">
+                            <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+                                <i class="icon-control fa fa-chevron-down"></i>
+                                <h6 class="title">Categories</h6>
+                            </a>
+                        </header>
+                        <div class="filter-content collapse show" id="collapse_1" style="">
+                            <div class="card-body">
+
+                                <ul class="list-menu">
+                                    <li><a href="{% url 'men' %}">Men </a></li>
+                                    <li><a href="{% url 'Woman' %}">Woman </a></li>
+                                    <li><a href="{% url 'kids' %}">Kids </a></li>
+                                </ul>
+
+                            </div> <!-- card-body.// -->
+                        </div>
+                    </article> <!-- filter-group  .// -->
+                    <article class="filter-group">
+                        <header class="card-header">
+                            <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true" class="">
+                                <i class="icon-control fa fa-chevron-down"></i>
+                                <h6 class="title">Brand</h6>
+                            </a>
+                        </header>
+                        <div class="filter-content collapse show" id="collapse_1" style="">
+                            <div class="card-body">
+
+                                <ul class="list-menu">
+                                    <li><a href="{% url 'adidas' %}">Adidas </a></li>
+                                    <li><a href="{% url 'puma' %}">Puma </a></li>
+                                    <li><a href="{% url 'nike' %}">Nike </a></li>
+                                    <li><a href="{% url 'vance' %}">Vance </a></li>
+                                </ul>
+
+                            </div> <!-- card-body.// -->
+                        </div>
+                    </article>
+                </div> <!-- card.// -->
+            </aside> <!-- col.// -->
+            <main class="col-md-9">
+
+                <header class="border-bottom mb-4 pb-3">
+                    <div class="form-inline">
+                        <span class="mr-md-auto">{{ products_by_puma|length }} Items found</span>
+                    </div>
+                </header><!-- sect-heading -->
+
+                <div class="container mt-5">
+                    <h2>All Products</h2>
+
+                    <div class="container">
+                        <div class="row">
+                            {% if not products_by_puma %}
+                                <h1 class="text-center">Sorry, no products are available for Puma.</h1>
+                            {% else %}
+                                {% for product in products_by_puma %}
+                                    <div class="col-md-4">
+                                        <a href="{% url 'product_detail' product.id %}">
+                                            <figure class="card card-product-grid">
+                                                <div class="img-wrap">
+                                                    <img src="{{ product.image.url }}">
+                                                </div> <!-- img-wrap.// -->
+                                                <figcaption class="info-wrap">
+                                                    <div class="fix-height">
+                                                        <a href="" class="title">{{ product.product_name }}</a>
+                                                        <div class="price-wrap mt-2">
+                                                            <span class="price">₹{{ product.offer_price }}</span>
+                                                            <del class="price-old">₹{{ product.price }}</del>
+                                                        </div> <!-- price-wrap.// -->
+                                                    </div>
+                                                    <a href="{% url 'add_to_cart' product.id %}" class="btn btn-block btn-primary">Added to cart</a>
+                                                </figcaption>
+                                            </figure>
+                                        </a>
+                                    </div> <!-- col.// -->
+                                {% endfor %}
+                            {% endif %}
+                        </div> <!-- row.// -->
+                    </div> <!-- container.// -->
+
+                </div>
+            </main>
+        </div>
+    </div>
+</section>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+
+{% endblock %}

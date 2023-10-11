@@ -63,9 +63,20 @@
         }
     </style>
 </head>
+
 <body>
+    
     <div class="login-container">
         <h1>Login</h1>
+        {% if messages %}
+        <div class="alert alert-danger">
+            <ul>
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
         <!-- Your messages code here -->
         <form action="{% url 'handle_login' %}" method="post" onsubmit="return validateForm();">
             {% csrf_token %}

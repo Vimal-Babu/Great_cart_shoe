@@ -3,6 +3,17 @@
 
 {% block body %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Add this link before the Bootstrap JavaScript link -->
+
+{% if messages %}
+<div class="alert alert-success">
+    <ul>
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
 
 <body>
         <!-- Content Start -->

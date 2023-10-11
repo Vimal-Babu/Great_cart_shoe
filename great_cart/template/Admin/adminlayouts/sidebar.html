@@ -1,35 +1,33 @@
 {% load static %}
 
-  <!-- Sidebar Start -->
-        <div class="sidebar pe-4 pb-3">
-            <nav class="navbar bg-light navbar-light">
-                <a href="{% url 'admin_index' %}" class="navbar-brand mx-4 mb-3">
-                    <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Admin</h3>
-                </a>
-                <div class="d-flex align-items-center ms-4 mb-4">
-                    <div class="position-relative">
-                        <img class="rounded-circle" src="{% static 'admin/img/user.jpg' %}" alt="" style="width: 40px; height: 40px;">
-                        <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0">vimal</h6>
-                        <span>Admin</span>
-                    </div>
-                </div>
-                <div class="navbar-nav w-100">
-
-                    <a href="{% url 'handle_product' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Products</a>
-                    <a href="{% url 'category_management' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Category</a>
-                    <a href="{% url 'brand' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Brand</a>
-                    {% comment %} <a href="#" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Varient</a> {% endcomment %}
-                    <a href="{% url 'user' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>User</a>
-                    <a href="{% url 'list_order' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>orders</a>
-                    <a href="{% url 'Banner_management' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Banner Management</a>
-                    {% comment %} <a href="#" class="nav-item nav-link"><i class="fa fa-tachometer-alt me-2"></i>Sales Report</a> {% endcomment %}
-                    
-
-
-                </div>
-            </nav>
+<!-- Sidebar Start -->
+<div class="sidebar pe-4 pb-3">
+    <nav class="navbar bg-light navbar-light">
+        <a href="{% url 'admin_index' %}" class="navbar-brand mx-4 mb-3">
+            <h3 class="text-primary"><i class="fa fa-hashtag me-2"></i>Admin</h3>
+        </a>
+        <div class="d-flex align-items-center ms-4 mb-4">
+            <div class="position-relative">
+                <img class="rounded-circle" src="{% static 'admin/img/user.jpg' %}" alt="" style="width: 40px; height: 40px;">
+                <div class="bg-success rounded-circle border border-2 border-white position-absolute end-0 bottom-0 p-1"></div>
+            </div>
+            <div class="ms-3">
+                <h6 class="mb-0">vimal</h6>
+                <span>Admin</span>
+            </div>
         </div>
-        <!-- Sidebar End -->
+        <div class="navbar-nav w-100">
+
+            <a href="{% url 'handle_product' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Products</a>
+            {% comment %} <a href="{% url 'add_multiple_image' %}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Add-multi-image</a> {% endcomment %}
+            <a href="{% url 'category_management' %}" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Category</a>
+            <a href="{% url 'brand' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Brand</a>
+            {% comment %} <a href="#" class="nav-item nav-link"><i class="fa fa-table me-2"></i>Varient</a> {% endcomment %}
+            <a href="{% url 'user' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>User</a>
+            <a href="{% url 'list_order' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>orders</a>
+            <a href="{% url 'Gift_management' %}" class="nav-item nav-link"><i  class="fa fa-gift" aria-hidden="true"></i>Gift Management</a>
+            <a href="{% url 'Banner_management' %}" class="nav-item nav-link"><i class="fa fa-chart-bar me-2"></i>Banner Management</a> 
+        </div>
+    </nav>
+</div>
+<!-- Sidebar End -->

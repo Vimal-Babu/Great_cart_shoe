@@ -28,8 +28,8 @@ urlpatterns = [
     path('user/',include('user.urls')),
     path('user_address/',include('user_address.urls')),
     path('store/',include('store.urls')),
-    path('offer/',include('offer.urls')),
     path('wallet/',include('wallet.urls')),
+    path('coupon_management/',include('coupon_management.urls'))
 ] 
 if settings.DEBUG:
     urlpatterns+= static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

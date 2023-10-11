@@ -6,13 +6,6 @@ from wallet.models import Wallet  # Import the Wallet model
 
 
 
-
-
-
-
-
-
-
 # def place_order(request):
 #     return render(request,'order/placeorder.html')
 

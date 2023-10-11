@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Your Orders{% endblock %}
+{% block title %}Your Orders History{% endblock %}
 
 {% block content %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
@@ -13,16 +13,19 @@
             <div class="col-12 ">
                 <div class="card mb-4 ml-3">
                     <div class="card-header py-3 bg-primary">
-                        <h1 class="text-white mb-0 text-center" >Billing details</h1>
+                        <h1 class="text-white mb-0 text-center" >Order History</h1>
                     </div>
                     <div id="invoice-content" class="card-body mt-2 p-4">
                         {% for order in orders %}
                         <div class="receipt-item">
+                            
+                            <hr>
+                            <h6>order id :</h6>{{order.order_id}}
                             <div class="row mt-4 m-4">
                                 
                                 <div class="col-md-2 ">
                                     <img src="{{ order.product.image.url }}" class="img-fluid" alt="Product Image">
-                                    <hr>
+                                    
                                 </div>
                                 <div class="col-md-2 text-center">
                                     <p class="text-muted mb-0"><h6>Order Status :</h6>{{ order.order_status }}</p>
@@ -32,7 +35,7 @@
                                 <div class="col-md-2 text-center">
                                     <p class="text-muted mb-0 small"><h6>Delivery Address:</h6></p>
                                     <p class="text-muted mb-0 small">{{ order.delivery_address.address_line_1 }}<br>{{ order.delivery_address.city }}<br>{{ order.delivery_address.state }}, {{ order.delivery_address.Zipcode }},{{ order.delivery_address.landmark }}</p> 
-                                    <p class="text-muted mb-0 small">Total Price :{{ order.total_price }}</p><hr>
+                                    <p class="text-muted mb-0 small">Total Price :{{ order.total_price }}</p>
                                 </div>
                                 <div class="col-md-2 text-center">
                                         <p class="text-muted mb-0"><h6>Order Date: </h6>{{ order.order_date  }}</p>
@@ -52,6 +55,7 @@
                                 <br>
                             </div>
                         </div>
+                        
                     {% endfor %}
                     </div>
                     <h3 class="ml-3">Grand Total: ${{ grand_total }}</h3>
@@ -63,19 +67,6 @@
 </body>
 
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -41,25 +41,27 @@
                                 <i class="fa fa-bars"></i> All category
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="#">Men </a>
-                                <a class="dropdown-item" href="#">Woman</a>
-                                <a class="dropdown-item" href="#">Kids</a>
-                                <a class="dropdown-item" href="#">New Arrivel</a>
-                                <a class="dropdown-item" href="#">Formals</a>
+                                <a class="dropdown-item" href="{% url 'men' %}">Men </a>
+                                <a class="dropdown-item" href="{% url 'Woman' %}">Woman</a>
+                                <a class="dropdown-item" href="{% url 'kids' %}">Kids</a>
+                                {% comment %} <a class="dropdown-item" href="#">New Arrivel</a>
+                                <a class="dropdown-item" href="#">Formals</a> {% endcomment %}
                             </div>
                         </div> <!-- category-wrap.// -->
                     </div> <!-- col.// -->
                     <a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
                     <div class="col-lg  col-md-6 col-sm-12 col">
-                        <form action="search" class="search">
+                        <form action="{% url 'search' %}" class="search" method="get">
                             <div class="input-group w-100">
-                                <input type="text" class="form-control" style="width:60%;" placeholder="Search">
+                                <input type="text" class="form-control" name="keyword" style="width:60%;" placeholder="Search">
                                 <div class="input-group-append">
                                     <button class="btn btn-primary" type="submit">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </div>
                             </div>
+                            <ul id="suggestions-list"></ul>
+                            {% comment %} <ul id="searchResults"></ul>   {% endcomment %}
                         </form> <!-- search-wrap .end// -->
                     </div> <!-- col.// -->
                     <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
@@ -85,11 +87,18 @@
                                 </div> 
                             </div>
                             
-                            <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                            {% comment %} <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
                                 <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i>
                                 </div>
                                 <span class="badge badge-pill badge-danger notify">*</span>
+                            </a> {% endcomment %}
+
+                            <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
+                                <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                                <span class="badge badge-pill badge-danger notify">{{cart_item_count }}</span>
                             </a>
+                            
+
                         </div> <!-- widgets-wrap.// -->
                     </div> <!-- col.// -->
                 </div> <!-- row.// -->
@@ -98,3 +107,35 @@
     </header> <!-- section-header.// -->
 </nav>
 <!-- Your navigation bar content end -->
+<!-- Your navigation bar content end -->
+
+<script>
+    // JavaScript function to handle search suggestions
+    function handleSearchInput() {
+        const searchInput = document.getElementById("search-input");
+        const suggestionsList = document.getElementById("suggestions-list");
+
+        searchInput.addEventListener("input", () => {
+            const keyword = searchInput.value;
+
+            // Make an AJAX request to the Django view
+            fetch(`/search-suggestions/?keyword=${keyword}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    // Clear previous suggestions
+                    suggestionsList.innerHTML = "";
+
+                    // Display the new suggestions
+                    data.forEach((suggestion) => {
+                        const suggestionItem = document.createElement("li");
+                        suggestionItem.textContent = suggestion;
+                        suggestionsList.appendChild(suggestionItem);
+                    });
+                });
+        });
+    }
+
+    // Call the function to initialize search suggestions
+    handleSearchInput();
+</script>
+

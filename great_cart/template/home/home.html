@@ -18,6 +18,16 @@
     }
 </style>
 
+{% if messages %}
+    <div class="alert alert-success">
+        <ul>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endif %}
+
 
 <div id="bannerCarousel" class="carousel slide mt-3" data-ride="carousel">
     <ol class="carousel-indicators">
@@ -53,22 +63,37 @@
 <section class="section-name padding-y-sm">
     <div class="container">
         <header class="section-heading">
-            <a href="./store.html" class="btn btn-outline-primary float-right">See all</a>
+            <a href="{% url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
             <h3 class="section-title">Popular products</h3>
         </header><!-- sect-heading -->
+
         <div class="row">
             {% for product in products %}
             <div class="col-md-3">
                 <div class="card card-product-grid">
                     <a href="{% url 'product_detail' product.id %}" class="img-wrap"> <img src="{{ product.image.url }}"> </a> 
-                    <figcaption class="info-wrap">
+                    <figcaption class="info-wrap">                     
                         <a href="{% url 'product_detail' product.id %}" class="title">{{ product.product_name }}</a>
-                        <div class="price mt-1">${{ product.price }}</div>
+                        <div class="price mt-1">
+                            {% if product.offer_percentage <= 0 %}
+                            <span>₹{{ product.price }}</span>
+                            <p style = 'color:red'>No Offer applicable for this product<p>
+                            {% else %} 
+                            <span style="text-decoration: line-through;">₹{{ product.price }}</span>
+                            <p style = 'color:red'>We offer {{product.offer_percentage}} % to this product<p>
+                            {% endif %}
+                        </div>
+                        {% if product.offer_percentage %}
+                        <div class="offer-price mt-1">
+                            ₹{{ product.offer_price|floatformat:2 }}
+                        </div>
+                        {% endif %}
                     </figcaption>
                 </div>
             </div>
             {% endfor %}
         </div> <!-- col.// --> 
+
     </div><!-- container // -->
 </section>
 {% endblock %}

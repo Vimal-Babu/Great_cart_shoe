@@ -262,3 +262,4 @@ def otp_verification(request,phone):
         else:
             pass
     return render(request, 'authentication/otp_verification.html')
+
