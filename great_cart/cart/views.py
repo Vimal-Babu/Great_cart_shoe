@@ -178,16 +178,15 @@ def place_order(request, address=0, total_price=0, context=None):
     if request.method == 'POST':
         payment_method = request.POST.get('payment_method')
         address_id = request.POST.get('selected_address')
-
         try:
             address = Address.objects.get(id=address_id)
         except Address.DoesNotExist:
             pass
-
         cart_items = CartItem.objects.filter(user=request.user).order_by('id')
         order_id = generate_uuid()
         
         if payment_method == "COD":
+            print('cod fuction wortksssssssssssssss')
             for cart_item in cart_items:
                 order = Orders(
                     user=request.user,
@@ -200,11 +199,9 @@ def place_order(request, address=0, total_price=0, context=None):
                 )
                 order.save()
                 cart_item.delete()
-                return redirect('order_success',order_id)
+            return redirect('order_success',order_id)
         elif payment_method == "wallet":
             # total_price = sum(cart_item.cart_price for cart in cart_item)
-            print("walletttttttttttttttttttttttttt workssssssssssssssssssss")
-
             wallet = Wallet.objects.get(user=request.user)
             print(wallet,'wallet outside the if ')
             if wallet.balance >= total_price:
@@ -225,7 +222,7 @@ def place_order(request, address=0, total_price=0, context=None):
                         order_id=order_id,
                     )
                     order.save()
-                cart_item.delete()
+                    cart_item.delete()
                 return redirect('order_success',order_id)
             else:
                 messages.error(request, 'Insufficient valet amount')
@@ -243,7 +240,7 @@ def place_order(request, address=0, total_price=0, context=None):
                 )
                 order.save()
                 cart_item.delete()
-                return redirect('order_success', order.order_id)
+            return redirect('order_success', order.order_id)
     context = {
         'total_price': total_price
     }

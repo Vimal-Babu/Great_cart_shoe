@@ -147,24 +147,24 @@
 <div class="row">
 {% for product in products %}  
     <a href="{% url 'product_detail' product.id %}">
-    <div class="col-md-4">
-        <figure class="card card-product-grid">
-            <div class="img-wrap"> 
-                <img src="{{ product.image.url }}">
-            </div> <!-- img-wrap.// -->
-            <figcaption class="info-wrap">
-                <div class="fix-height">
-                    <a href="" class="title">{{ product.product_name }}</a>
-                    <div class="price-wrap mt-2">
-                        <span class="price">₹{{product.offer_price}}</span>
-                        <del class="price-old">₹{{ product.price }}</del> 
-                    </div> <!-- price-wrap.// -->
-                </div>
-                <a href="{% url 'add_to_cart' product.id %}" class="btn btn-block btn-primary">Add to cart</a> 
-            </figcaption>
-        </figure>
-    </div> <!-- col.// -->
-</a>
+		<div class="col-md-4">
+			<figure class="card card-product-grid">
+				<div class="img-wrap"> 
+					<img src="{{ product.image.url }}">
+				</div> <!-- img-wrap.// -->
+				<figcaption class="info-wrap">
+					<div class="fix-height">
+						<a href="" class="title">{{ product.product_name }}</a>
+						<div class="price-wrap mt-2">
+							<span class="price">₹{{product.offer_price}}</span>
+							<del class="price-old">₹{{ product.price }}</del> 
+						</div> <!-- price-wrap.// -->
+					</div>
+					<a href="{% url 'add_to_cart' product.id %}" class="btn btn-block btn-primary">Add to cart</a> 
+				</figcaption>
+			</figure>
+		</div> <!-- col.// -->
+	</a>
 {% endfor %}
 {% endif %}
 
